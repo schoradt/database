@@ -1,0 +1,61 @@
+Kommentierungsrichtlinien:
+==========================
+Anmerkung: Die Reihenfolge der einzelnen Kommentarelemente ist durch die hier
+           aufgeführte Vorstellungsreihenfolge gegeben.
+
+
+Funktionssignaturen im Block:
+  /*
+   *
+   */
+
+Beschreibung der Funktion in Signatur:
+  /*
+   * [Beschreibung der Funktion]
+   */
+
+Status der Funktion:
+  /*
+   * @state   [Status] ([optionaler Kommentar])
+   */
+
+Ein- / Ausgabe Parameter der Funktion:
+  /*
+   * @input   [Datentyp]: [Beschreibung]
+   *          [Datentyp]: [Beschreibung] - DEFAULT [Wert]
+   * @output  [Datentyp]: [Beschreibung]
+   */
+
+
+
+Funktionsstatus:
+================
+Folgender Status kann vergeben werden:
+- experimental -> Funktion befindet sich in experimentellen Status, per Kommentar kann auf
+                  Probleme hingewiesen werden
+- stable       -> Funktion läuft stabil, jedoch keine Qualitätssicherung durchgeführt
+- tested       -> Qualitätssicherung bestanden
+
+
+
+Beispiel:
+=========
+/*
+ * Diese Funktion macht irgendetwas sinnvolles.
+ *
+ * @state   experimental
+ * @input   int: Sinnvolle Zahl
+ *          varchar: Sinnvoller Text - DEFAULT 'kein sinnvoller Text'
+ * @output  boolean: true wenn Zahl und Text wirklich sinnvoll, sonst false
+
+
+
+Vorlage:
+========
+/*
+ * 
+ *
+ * @state   
+ * @input   
+ * @output  
+ */
