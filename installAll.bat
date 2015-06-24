@@ -158,8 +158,8 @@ IF NOT "%1"=="" (
     SET "meta=1"
     SET "system=1"
     SET "project=1"
-    SET "p_baalbek=1"
-    SET "p_palatin=1"
+    SET "p_baalbek=0"
+    SET "p_palatin=0"
     SET "p_test=1"
   )
   IF "%1"=="--all" (
@@ -169,8 +169,8 @@ IF NOT "%1"=="" (
     SET "meta=1"
     SET "system=1"
     SET "project=1"
-    SET "p_baalbek=1"
-    SET "p_palatin=1"
+    SET "p_baalbek=0"
+    SET "p_palatin=0"
     SET "p_test=1"
   )
   
@@ -198,13 +198,13 @@ IF NOT "%1"=="" (
   IF "%1"=="-r" (
     IF NOT "%2%"=="" (
       SET "project=1"
-      IF "%2"=="baalbek" ( SET "p_baalbek=1")
-      IF "%2"=="palatin" ( SET "p_palatin=1")
+      IF "%2"=="baalbek" ( SET "p_baalbek=0")
+      IF "%2"=="palatin" ( SET "p_palatin=0")
       IF "%2"=="test" ( SET "p_test=1")
     ) ELSE (
       SET "project=1"
-      SET "p_baalbek=1"
-      SET "p_palatin=1"
+      SET "p_baalbek=0"
+      SET "p_palatin=0"
       SET "p_test=1"
     )
     SHIFT
@@ -212,13 +212,13 @@ IF NOT "%1"=="" (
   IF "%1"=="-project" (
     IF NOT "%2%"=="" (
       SET "project=1"
-      IF "%2"=="baalbek" ( SET "p_baalbek=1")
-      IF "%2"=="palatin" ( SET "p_palatin=1")
+      IF "%2"=="baalbek" ( SET "p_baalbek=0")
+      IF "%2"=="palatin" ( SET "p_palatin=0")
       IF "%2"=="test" ( SET "p_test=1")
     ) ELSE (
       SET "project=1"
-      SET "p_baalbek=1"
-      SET "p_palatin=1"
+      SET "p_baalbek=0"
+      SET "p_palatin=0"
       SET "p_test=1"
     )
     SHIFT
@@ -499,36 +499,36 @@ REM install project database and trigger
   ECHO.
   ECHO Install Baalbek geometry settings
   ECHO =================================
-  REM %commandFile% "data\project_baalbek_geom_settings.sql" -q
+  %commandFile% "data\project_baalbek_geom_settings.sql" -q
   
   ECHO.
   ECHO.
   ECHO Install Baalbek data
   ECHO ====================
-  REM pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_baalbek_dump
+  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_baalbek_dump
   
   ECHO.
   ECHO.
   ECHO Install Baalbek meta data
   ECHO =========================
-  REM %commandFile% "data\project_baalbek_meta_data.sql" -q
+  %commandFile% "data\project_baalbek_meta_data.sql" -q
   
   ECHO.
   ECHO.
   ECHO Rename project schema
   ECHO =====================
-  REM %command% -c "SELECT public.rename_project_schema('Baalbek');"
+  %command% -c "SELECT public.rename_project_schema('Baalbek');"
   
   REM TODO: make this more generic
   ECHO.
   ECHO.
   ECHO Init baalbek geom views
   ECHO =======================
-  REM %command% -c "SELECT public.init_geom_views('project_fd27a347-4e33-4ed7-aebc-eeff6dbf1054')"
+  %command% -c "SELECT public.init_geom_views('project_fd27a347-4e33-4ed7-aebc-eeff6dbf1054')"
 
   ECHO Init indices for baalbek project
   ECHO ================================
-  REM %commandFile% "schema\project_indices.sql" -q
+  %commandFile% "schema\project_indices.sql" -q
   
   SET "p_baalbek=0"
   GOTO install
@@ -540,13 +540,13 @@ REM install project database and trigger
   ECHO.
   ECHO Install Palatin data
   ECHO ====================
-  REM pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_palatin_dump
+  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_palatin_dump
   
   ECHO.
   ECHO.
   ECHO Rename project schema
   ECHO =====================
-  REM %command% -c "SELECT public.rename_project_schema('Palatin');"
+  %command% -c "SELECT public.rename_project_schema('Palatin');"
   
   SET "p_palatin=0"
   GOTO install
