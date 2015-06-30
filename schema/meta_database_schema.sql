@@ -1,4 +1,7 @@
 /*
+ * * changelog from 30.06.2015
+ * - added gt_pk_metadata_table for GeoServer metadata
+ *
  * changelog from 08.05.2015
  * - protocol renamed to log
  *
@@ -129,6 +132,20 @@ CREATE TABLE "projects"
   "database_connection_id" uuid NOT NULL REFERENCES "database_connection" ("id"),
   "settings" uuid REFERENCES "settings" ("id"),
   "is_subproject" boolean NOT NULL DEFAULT 'false'
+);
+
+-- Table for storing GeoServer relatated metadata for spatial tables and views.
+-- TODO: Check if OpenInfRA may support init of plugin related database objects
+--       instead of putting definitions into core files
+CREATE TABLE gt_pk_metadata_table (
+  "table_schema" varchar(64) NOT NULL,
+  "table_name" varchar(64) NOT NULL,
+  "pk_column" varchar(64) NOT NULL,
+  "pk_column_idx" integer,
+  "pk_policy" varchar(32),
+  "pk_sequence" varchar(64),
+  UNIQUE ("table_schema", "table_name", "pk_column"),
+  CHECK ("pk_policy" IN ('sequence', 'assigned', 'autoincrement'))
 );
 
 /*
