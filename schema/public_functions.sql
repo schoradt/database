@@ -384,22 +384,7 @@ CREATE OR REPLACE FUNCTION public.create_view(varchar, uuid, text[],
      EXECUTE 'CREATE OR REPLACE VIEW '|| quote_ident(_schema) ||'.'|| quote_ident(_view_name)||
             ' AS '||_sql ;
 
-    -- add id mappings to geoserver meta table (project specific)
-    _create_query := '
-      CREATE TABLE IF NOT EXISTS ' || quote_ident(_schema) || '.gt_pk_metadata_table (
-        table_schema VARCHAR(64) NOT NULL,
-        table_name VARCHAR(64) NOT NULL,
-        pk_column VARCHAR(32) NOT NULL,
-        pk_column_idx INTEGER,
-        pk_policy VARCHAR(32),
-        pk_sequence VARCHAR(64),
-        unique (table_schema, table_name, pk_column),
-        check (pk_policy in (''sequence'', ''assigned'', ''autoincrement''))
-      )';
-
-    EXECUTE _create_query;
-
-    EXECUTE 'INSERT INTO ' || quote_ident(_schema) || '.gt_pk_metadata_table VALUES (
+    EXECUTE 'INSERT INTO "meta_data"."gt_pk_metadata_table" VALUES (
         ' || quote_literal(_schema) || ',
         ' || quote_literal(_view_name) || ',
         ''id'',
@@ -477,4 +462,3 @@ BEGIN
   END LOOP;
 END;
 $$ LANGUAGE plpgsql;
-
