@@ -43,6 +43,7 @@ CREATE OR REPLACE FUNCTION public.create_uuid()
  * @state   stable
  * @output  ANYARRAY[]:
  */
+DROP AGGREGATE IF EXISTS public.array_agg_mult(ANYARRAY);
 CREATE AGGREGATE public.array_agg_mult(ANYARRAY)  (
   SFUNC     = array_cat,
   STYPE     = anyarray,
