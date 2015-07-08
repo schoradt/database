@@ -337,7 +337,7 @@ CREATE OR REPLACE FUNCTION public.create_view(varchar, uuid, text[],
 
     -- TODO: test geom type in column: ST_GeometryType(the_geom)
     _sql := _sql || '
-      st_multi("avg"."geom")::geometry('|| _geom_type ||', '|| _projection ||
+      ST_Transform(ST_Multi("avg"."geom"), '|| _projection ||')::geometry('|| _geom_type ||', '|| _projection ||
       ') AS the_geom';
 
     -- construct static part of the sql string
@@ -384,6 +384,12 @@ CREATE OR REPLACE FUNCTION public.create_view(varchar, uuid, text[],
      EXECUTE 'CREATE OR REPLACE VIEW '|| quote_ident(_schema) ||'.'|| quote_ident(_view_name)||
             ' AS '||_sql ;
 
+    -- prune entry if any
+    EXECUTE 'DELETE FROM "meta_data"."gt_pk_metadata_table"
+      WHERE table_schema = ' || quote_literal(_schema) || '
+      AND   table_name   = ' || quote_literal(_view_name);
+
+    -- insert metadata
     EXECUTE 'INSERT INTO "meta_data"."gt_pk_metadata_table" VALUES (
         ' || quote_literal(_schema) || ',
         ' || quote_literal(_view_name) || ',
@@ -408,25 +414,31 @@ CREATE OR REPLACE FUNCTION public.create_view(varchar, uuid, text[],
  *
  * @state   experimental
  *
- * @input   varchar:  project schema name
+ * @input   varchar:  project schema name,
+ * @input   UUID:  locale_id of attributes
  * @output  void
  */
-CREATE OR REPLACE FUNCTION init_geom_views(VARCHAR)
+CREATE OR REPLACE FUNCTION public.init_geom_views(
+    VARCHAR,
+    VARCHAR DEFAULT 'c0d76ff3-a711-42af-920d-09132a287015')
   RETURNS VOID
   AS $$
 DECLARE
-  _schema ALIAS FOR $1;
-  _i    RECORD;
-  _desc TEXT [] [];
+  _schema        ALIAS FOR $1;
+  _locale_id     ALIAS FOR $2;
+  _i             RECORD;
+  _desc          TEXT [] [];
+  _geometry_type RECORD;
 BEGIN
   -- set search path to passed schema
   EXECUTE 'SET search_path TO '|| quote_ident(_schema) ||', constraints, public';
 
-  -- loop over characteristics have geom attribute_types
+  -- loop over characteristics that have geom attribute_types
   FOR _i IN (
     SELECT DISTINCT tc.id
     FROM topic_characteristic tc
-      INNER JOIN attribute_type_group_to_topic_characteristic atgtc ON tc.id = atgtc.topic_characteristic_id
+      INNER JOIN attribute_type_group_to_topic_characteristic atgtc
+        ON tc.id = atgtc.topic_characteristic_id
       INNER JOIN attribute_type_to_attribute_type_group atatg
         ON atgtc.id = atatg.attribute_type_group_to_topic_characteristic_id
       INNER JOIN attribute_type at ON atatg.attribute_type_id = at.id
@@ -440,25 +452,61 @@ BEGIN
     )
   )
   LOOP
-    SELECT array_agg_mult(ARRAY [ARRAY [
-      atatg.id::TEXT,
-      at.id::TEXT,
-      'c0d76ff3-a711-42af-920d-09132a287015',
-      replace(
-          get_localized_character_string('project_fd27a347-4e33-4ed7-aebc-eeff6dbf1054', at.name)::TEXT,
-          ' ', '_'
-      )
-    ]]) INTO _desc
-    FROM topic_characteristic tc
-    INNER JOIN attribute_type_group_to_topic_characteristic atgtc ON tc.id = atgtc.topic_characteristic_id
-    INNER JOIN attribute_type_to_attribute_type_group atatg ON atgtc.id = atatg.attribute_type_group_to_topic_characteristic_id
-    INNER JOIN attribute_type at ON atatg.attribute_type_id = at.id
-    WHERE
-      at.id NOT IN ('78b47591-b1eb-447f-b369-0aa3476c965c') -- Non-Geometrie attribute_types
-      AND domain IS NULL                                    -- non-domain values only
-      AND tc.id = _i.id;
+    BEGIN
+      SELECT array_agg_mult(ARRAY [ARRAY [
+        atatg.id::TEXT,
+        at.id::TEXT,
+        _locale_id,
+        replace(
+            get_localized_character_string(_schema, at.name)::TEXT,
+            ' ', '_'
+        )
+      ]]) INTO _desc
+      FROM topic_characteristic tc
+      INNER JOIN attribute_type_group_to_topic_characteristic atgtc
+        ON tc.id = atgtc.topic_characteristic_id
+      INNER JOIN attribute_type_to_attribute_type_group atatg
+        ON atgtc.id = atatg.attribute_type_group_to_topic_characteristic_id
+      INNER JOIN attribute_type at
+        ON atatg.attribute_type_id = at.id
+      WHERE
+        at.id NOT IN ('78b47591-b1eb-447f-b369-0aa3476c965c') -- Non-Geometrie attribute_types
+        AND domain IS NULL                                    -- non-domain values only
+        AND tc.id = _i.id;
 
-      PERFORM create_view(_schema, _i.id, _desc, 'MULTIPOLYGON', '4326');
+      -- skip any tc's that do not have attribute_types other than geom
+      IF (array_length(_desc, 1) IS NULL) THEN
+        CONTINUE;
+      END IF;
+
+      -- determine geometry attributes to set on view
+      -- will throw if topic characteristic is empty or more than one geometrytype
+      -- or srid is used with that characteristic
+      -- if that is the case, manual call to create_view is nesessary
+      --
+      -- We need to cast to multi geometries as GeoServer seems to have problems
+      -- with single type geometry layers (Polygon vs. MultiPolygon)
+      SELECT DISTINCT
+        geometrytype(ST_Multi(geom)) AS gtype,
+        st_srid(geom)      AS srid
+      INTO STRICT _geometry_type
+      FROM topic_characteristic tc
+      INNER JOIN attribute_type_group_to_topic_characteristic atgtc
+        ON tc.id = atgtc.topic_characteristic_id
+      INNER JOIN attribute_type_to_attribute_type_group atatg
+        ON atgtc.id = atatg.attribute_type_group_to_topic_characteristic_id
+      INNER JOIN attribute_value_geom avg
+        ON atatg.id = avg.attribute_type_to_attribute_type_group_id
+      WHERE tc.id = _i.id;
+
+      PERFORM create_view(_schema, _i.id, _desc, _geometry_type.gtype, _geometry_type.srid);
+
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          RAISE NOTICE 'TC % does not have any attribute_value_geom rows to determine geometry from.', _i.id;
+        WHEN TOO_MANY_ROWS THEN
+          RAISE NOTICE 'TC % attribute_value_geom rows do not share common geometrytype or srid.', _i.id;
+    END;
   END LOOP;
 END;
 $$ LANGUAGE plpgsql;
