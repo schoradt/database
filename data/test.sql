@@ -55,11 +55,13 @@ INSERT INTO localized_character_string VALUES ('28a15c62-239e-474e-8785-ddab7590
 INSERT INTO localized_character_string VALUES ('28a15c62-239e-474e-8785-ddab759022c6', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'green');
 INSERT INTO localized_character_string VALUES ('4902bc22-1591-428b-b456-885a8b451b1e', 'c0d76ff3-a711-42af-920d-09132a287015', 'ist Teil von');
 INSERT INTO localized_character_string VALUES ('4902bc22-1591-428b-b456-885a8b451b1e', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'is part of');
+INSERT INTO localized_character_string VALUES ('6d95ecf8-7a60-48a0-8de0-ee5926c708bf', 'c0d76ff3-a711-42af-920d-09132a287015', 'Diese Gruppe fasst sämtliche Eigenschaften von Wänden zusammen.');
+INSERT INTO localized_character_string VALUES ('6d95ecf8-7a60-48a0-8de0-ee5926c708bf', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'This group collects all properties of walls.');
 
 INSERT INTO project VALUES ('e7d42bff-4e40-4f43-9d1b-1dc5a190cd75', 'd4bbc73b-85ed-4b63-9568-061d71742063', 'b40828c1-6ba8-4a84-aa32-6b234774a819', NULL); -- Test-Projekt
 
 INSERT INTO attribute_type_group VALUES ('92c8b3ee-61cb-44ec-be29-312c1fbb33d6', 'e12fef7c-872a-4ab3-970c-98e19d682726', NULL, NULL); -- Raum-Gruppe
-INSERT INTO attribute_type_group VALUES ('dbe9b7d4-710d-4418-bd28-95004dece304', 'f876dcac-a36d-4cde-871f-e1f18a70e24f', NULL, NULL); -- Wand-Gruppe
+INSERT INTO attribute_type_group VALUES ('dbe9b7d4-710d-4418-bd28-95004dece304', 'f876dcac-a36d-4cde-871f-e1f18a70e24f', '6d95ecf8-7a60-48a0-8de0-ee5926c708bf', NULL); -- Wand-Gruppe
 INSERT INTO attribute_type_group VALUES ('24e81d76-b7ea-4adf-bb46-4ee81b5b83ec', 'f6038513-5d0f-4392-877d-7727cbe2bbda', NULL, NULL); -- Metadaten-Gruppe
 
 INSERT INTO multiplicity VALUES ('2d8bc741-c775-4932-b9ea-83f7251eee04', 0, 4);
@@ -104,7 +106,7 @@ INSERT INTO value_list_values VALUES ('c34c9b66-25b8-4e45-9abb-2854fc901aef', '4
 
 INSERT INTO relationship_type VALUES ('63a9125e-7c0e-4c85-abe5-56905900a150', '5de1f2f4-e766-400a-a1cb-2fe8a4373fc3', 'c34c9b66-25b8-4e45-9abb-2854fc901aef'); -- Relationstyp "beinhaltet" für Thema "Raum" aus WL_Thema
 
-INSERT INTO relationship_type_to_topic_characteristic VALUES ('3b218dd8-09a0-42e0-b570-efaba66c4c31', '63a9125e-7c0e-4c85-abe5-56905900a150', '2d8bc741-c775-4932-b9ea-83f7251eee04'); -- Relationstyp "beínhaltet" für Wand-TC mit Multiplizität 0:4
+INSERT INTO relationship_type_to_topic_characteristic VALUES ('ac2fdceb-92a4-4c19-affe-89a3c34f1562', '3b218dd8-09a0-42e0-b570-efaba66c4c31', '63a9125e-7c0e-4c85-abe5-56905900a150', '2d8bc741-c775-4932-b9ea-83f7251eee04'); -- Relationstyp "beínhaltet" für Wand-TC mit Multiplizität 0:4
 
 INSERT INTO topic_instance_x_topic_instance VALUES ('1af5b2d8-5854-4dcb-b31c-1778c5015e1b', '53f85242-2cb0-427c-882b-d4bdbf27e360', 'fab4e287-3b8e-48fa-9282-63fc123dff47', '63a9125e-7c0e-4c85-abe5-56905900a150'); -- Raum-TI-1 beinhaltet Wand-TI-1
 INSERT INTO topic_instance_x_topic_instance VALUES ('aa427e06-8fa1-4df6-a367-39a479d0f29e', '07be6a08-d8a7-4c80-ae7e-281d2d306a59', 'fab4e287-3b8e-48fa-9282-63fc123dff47', '63a9125e-7c0e-4c85-abe5-56905900a150'); -- Raum-TI-1 beinhaltet Wand-TI-2

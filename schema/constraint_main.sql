@@ -1,4 +1,8 @@
 /*
+ * changelog from 13.07.2015
+ * - fixed wrong parameters for check constraint functions in
+ *   check_value_list_x_value_list_u
+ *
  * changelog from 29.05.2015
  * - constraint 63 added
  *
@@ -2671,28 +2675,27 @@ CREATE OR REPLACE FUNCTION check_value_list_x_value_list_u(varchar, uuid, uuid,
   BEGIN
 
     -- check constraint 16
-    IF (check_constraint_16(_new_value_list_values_1_id,
-                            _new_value_list_values_2_id)) THEN
+    IF (check_constraint_16(_schema, _new_relationship_id)) THEN
       RETURN true;
     END IF;
 
     -- check constraint 17
-    IF (check_constraint_17(_new_relationship_id,
-                            _new_value_list_values_1_id,
-                            _new_value_list_values_2_id)) THEN
+    IF (check_constraint_17(_schema, _new_relationship_id,
+                            _new_value_list_1_id,
+                            _new_value_list_2_id)) THEN
       RETURN true;
     END IF;
 
     -- check constraint 18
-    IF (check_constraint_18(_new_relationship_id,
-                            _new_value_list_values_1_id,
-                            _new_value_list_values_2_id)) THEN
+    IF (check_constraint_18(_schema, _new_relationship_id,
+                            _new_value_list_1_id,
+                            _new_value_list_2_id)) THEN
       RETURN true;
     END IF;
 
     -- check constraint 19
-    IF (check_constraint_19(_new_value_list_values_1_id,
-                            _new_value_list_values_2_id)) THEN
+    IF (check_constraint_19(_new_value_list_1_id,
+                            _new_value_list_2_id)) THEN
       RETURN true;
     END IF;
 

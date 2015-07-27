@@ -1,4 +1,14 @@
 /*
+ * changelog from 21.07.2015
+ * - added new column project_id to table topic_characteristic 
+ * - removed unique constraint from meta_data
+ *
+ * changelog from 10.07.2015
+ * - removed the composite primary key from attribtue_type_x_attribute_type,
+ *   value_list_x_value_list, value_list_values_x_value_list_values and
+ *   relationship_type_to_topic_characteristic and inserted a new column id as
+ *   primary key
+ *
  * changelog from 06.05.2015
  * - added unique for columns in attribute_type_to_attribute_type_group
  * - removed unique constraints from attribute_type_to_attribute_type_group and
@@ -124,10 +134,11 @@ CREATE TABLE "value_list_values"
 -- reading direction: value_list_1 relationship value_list_2
 CREATE TABLE "value_list_x_value_list"
 (
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "value_list_1" uuid NOT NULL REFERENCES "value_list" ("id"),
   "value_list_2" uuid NOT NULL REFERENCES "value_list" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  PRIMARY KEY ("value_list_1", "value_list_2")
+  CONSTRAINT vl_x_vl_unique_key UNIQUE ("value_list_1", "value_list_2", "relationship")
 );
 
 
@@ -135,10 +146,11 @@ CREATE TABLE "value_list_x_value_list"
 -- in reading direction: value_list_values_1 relationship value_list_values_2
 CREATE TABLE "value_list_values_x_value_list_values"
 (
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "value_list_values_1" uuid NOT NULL REFERENCES "value_list_values" ("id"),
   "value_list_values_2" uuid NOT NULL REFERENCES "value_list_values" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  PRIMARY KEY ("value_list_values_1", "value_list_values_2")
+  CONSTRAINT vlv_x_vlv_unique_key UNIQUE ("value_list_values_1", "value_list_values_2", "relationship")
 );
 
 
@@ -176,10 +188,11 @@ CREATE TABLE "relationship_type"
 -- in reading direction: attribute_type_1 relationship attribute_type_2
 CREATE TABLE "attribute_type_x_attribute_type"
 (
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "attribute_type_1" uuid NOT NULL REFERENCES "attribute_type" ("id"),
   "attribute_type_2" uuid NOT NULL REFERENCES "attribute_type" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  PRIMARY KEY ("attribute_type_1", "attribute_type_2")
+  CONSTRAINT at_x_at_unique_key UNIQUE ("attribute_type_1", "attribute_type_2", "relationship")
 );
 
 
@@ -198,7 +211,8 @@ CREATE TABLE "topic_characteristic"
 (
   "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "description" uuid NOT NULL UNIQUE REFERENCES "pt_free_text" ("id"),
-  "topic" uuid NOT NULL REFERENCES "value_list_values" ("id")
+  "topic" uuid NOT NULL REFERENCES "value_list_values" ("id"),
+  "project_id" uuid DEFAULT NULL CHECK ("project_id" IS NULL)
 );
 
 
@@ -229,10 +243,10 @@ CREATE TABLE "attribute_type_to_attribute_type_group"
 -- contains the mapping of relationship types to topic characteristics
 CREATE TABLE "relationship_type_to_topic_characteristic"
 (
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "topic_characteristic_id" uuid NOT NULL REFERENCES "topic_characteristic" ("id"),
   "relationship_type_id" uuid REFERENCES "relationship_type" ("id"),
-  "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id"),
-  PRIMARY KEY ("relationship_type_id", "topic_characteristic_id")
+  "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id")
 );
 
 
@@ -241,6 +255,5 @@ CREATE TABLE "meta_data"
   "object_id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "table_name" varchar NOT NULL CHECK ("public".table_exists("table_name")),
   "pk_column" varchar NOT NULL CHECK ("public".column_exists("pk_column", "table_name")),
-  "data" jsonb NOT NULL,
-  CONSTRAINT table_column_unique_key UNIQUE ("table_name", "pk_column")
+  "data" jsonb NOT NULL
 )
