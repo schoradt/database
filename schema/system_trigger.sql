@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.08.2015
+ * - added trigger for table meta_data
+ *
  * changelog from 06.05.2015
  * - trigger parameter changed for new multiplicity checks
  *
@@ -276,6 +279,30 @@ AFTER DELETE ON "localized_character_string"
                 "constraints".get_current_project_schema(),
                 NULL, OLD."pt_free_text_id"))
 EXECUTE PROCEDURE delete_violation_on_trigger('localized_character_string');
+
+
+
+/******************************************************************************/
+/********************************* meta_data **********************************/
+/******************************************************************************/
+
+DROP TRIGGER IF EXISTS meta_data_insert ON "meta_data";
+DROP TRIGGER IF EXISTS meta_data_update ON "meta_data";
+
+CREATE TRIGGER meta_data_insert
+BEFORE INSERT ON "meta_data"
+  FOR EACH ROW
+    WHEN (check_meta_data_i("constraints".get_current_project_schema(),
+                NEW."object_id", NEW."table_name", NEW."pk_column"))
+EXECUTE PROCEDURE insert_violation_on_trigger('meta_data');
+
+CREATE TRIGGER meta_data_update
+BEFORE UPDATE ON "meta_data"
+  FOR EACH ROW
+    WHEN (check_meta_data_u("constraints".get_current_project_schema(),
+                NEW."id", NEW."object_id", NEW."table_name", NEW."pk_column",
+                OLD."id"))
+EXECUTE PROCEDURE update_violation_on_trigger('meta_data');
 
 
 

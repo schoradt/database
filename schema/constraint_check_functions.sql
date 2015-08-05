@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.08.2015
+ * - constraint 10 added
+ *
  * changelog from 29.05.2015
  * - constraint 63 added
  *
@@ -320,6 +323,52 @@ CREATE OR REPLACE FUNCTION check_constraint_9(varchar, uuid)
   END;
   $$ LANGUAGE 'plpgsql';
 
+
+/******************************************************************************/
+/************************************ 10 **************************************/
+/******************************************************************************/
+/*
+ * The column "object_id" of the relation "meta_data" may only have entries that
+ * exists in the colum of "pk_column" and the table "table_name".
+ *
+ * @state   stable
+ * @input   varchar: schema name
+ *          uuid: new object_id
+ *          varchar: new table_name
+ *          varchar: new pk_column
+ * @output  boolean: true if constraint is violated, else false
+ */
+CREATE OR REPLACE FUNCTION check_constraint_10(varchar, uuid, varchar, varchar)
+  RETURNS boolean AS $$
+  DECLARE
+    _schema ALIAS FOR $1;
+    _new_object_id ALIAS FOR $2;
+    _new_table_name ALIAS FOR $3;
+    _new_pk_column ALIAS FOR $4;
+    _sql varchar;
+    _result uuid;
+  BEGIN
+
+    -- set search path to passed schema
+    EXECUTE 'SET search_path TO '|| quote_ident(_schema) ||', constraints, public';
+
+    -- (10) Die Spalte "object_id" der Relation "meta_data" darf nur Einträge 
+    --      besitzen, die in der Spalte aus "pk_column" und der Tabelle aus
+    --      "table_name" existieren.
+    _sql := 'SELECT "id" FROM '|| quote_ident(_new_table_name) ||
+            ' WHERE '|| quote_ident(_new_pk_column) ||' = 
+            '|| quote_literal(_new_object_id);
+    EXECUTE _sql INTO _result;
+    
+    IF _result IS NULL THEN
+      PERFORM throw_constraint_message(10);
+      RETURN true;
+    END IF;
+
+    RETURN false;
+  END;
+  $$ LANGUAGE 'plpgsql';
+  
 
 /******************************************************************************/
 /************************************ 11 **************************************/

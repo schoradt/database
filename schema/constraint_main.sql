@@ -1,6 +1,7 @@
 /*
  * changelog from 05.08.2015
  * - fixed arguments for check_constraint_27 call
+ * - added constraint check for meta_data
  *
  * changelog from 13.07.2015
  * - fixed wrong parameters for check constraint functions in
@@ -1558,6 +1559,79 @@ CREATE OR REPLACE FUNCTION localized_character_string_d(varchar, uuid,
     EXCEPTION
         WHEN foreign_key_violation THEN
         RETURN false;
+  END;
+  $$ LANGUAGE 'plpgsql';
+
+
+/******************************************************************************/
+/********************************* meta_data **********************************/
+/******************************************************************************/
+/*
+ * Perform the integrity check for insert statements on the table meta_data.
+ *
+ * @state   stable
+ * @input   varchar: schema
+ *          uuid: new object_id
+ *          varchar: new table_name
+ *          varchar: new pk_column
+ * @output  boolean: true if a constraint is violated, else false
+ */
+CREATE OR REPLACE FUNCTION check_meta_data_i(varchar, uuid, varchar, varchar)
+  RETURNS boolean AS $$
+  DECLARE
+    _schema ALIAS FOR $1;
+    _new_object_id ALIAS FOR $2;
+    _new_table_name ALIAS FOR $3;
+    _new_pk_column ALIAS FOR $4;
+  BEGIN
+
+    -- check constraint 10
+    IF (check_constraint_10(_schema, _new_object_id, _new_table_name,
+                            _new_pk_column)) THEN
+      RETURN true;
+    END IF;
+
+    return false;
+  END;
+  $$ LANGUAGE 'plpgsql';
+
+
+/*
+ * Perform the integrity check for update statements on the table meta_data.
+ *
+ * @state   stable
+ * @input   varchar: schema
+ *          uuid: new id
+ *          uuid: new object_id
+ *          varchar: new table_name
+ *          varchar: new pk_column
+ *          uuid: old id
+ * @output  boolean: true if a constraint is violated, else false
+ */
+CREATE OR REPLACE FUNCTION check_meta_data_u(varchar, uuid, uuid, varchar,
+                                             varchar, uuid)
+  RETURNS boolean AS $$
+  DECLARE
+    _schema ALIAS FOR $1;
+    _new_id ALIAS FOR $2;
+    _new_object_id ALIAS FOR $3;
+    _new_table_name ALIAS FOR $4;
+    _new_pk_column ALIAS FOR $5;
+    _old_id ALIAS FOR $6;
+  BEGIN
+
+    -- check if the primary key has changed
+    IF (compare_ids(_new_id, _old_id)) THEN
+      RETURN true;
+    END IF;
+
+    -- check constraint 10
+    IF (check_constraint_10(_schema, _new_object_id, _new_table_name,
+                            _new_pk_column)) THEN
+      RETURN true;
+    END IF;
+
+    return false;
   END;
   $$ LANGUAGE 'plpgsql';
 

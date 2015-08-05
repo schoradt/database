@@ -1,4 +1,7 @@
 /*
+ * changelog from 02.08.2015
+ * - constraint 10 added
+ *
  * changelog from 29.05.2015
  * - constraint 63 added
  *
@@ -184,6 +187,8 @@ CREATE OR REPLACE FUNCTION throw_constraint_message(integer)
         _message := 'Constraint 8 - Die Spalte "data_type" der Relation "attribute_type" darf ausschließlich Werte aus "value_list_values" zugeordnet bekommen, welche sich in der Werteliste "vl_data_type" befinden.';
       WHEN 9 THEN
         _message := 'Constraint 9 - Die Spalte "domain" der Relation "attribute_type" darf ausschließlich Werte aus "value_list" zugeordnet bekommen, welche nicht "vl_relationship_type", "vl_data_type", "vl_unit", "vl_skos_relationship" oder "vl_topic" entsprechen.';
+      WHEN 10 THEN
+        _message := 'Constraint 10 - Die Spalte "object_id" der Relation "meta_data" darf nur Einträge besitzen, die in der Spalte aus "pk_column" und der Tabelle aus "table_name" existieren.';
       WHEN 11 THEN
         _message := 'Constraint 11 - Die Spalte "default_value" der Relation "attribute_type_to_attribute_type_group" darf nur dann einen Eintrag besitzen, wenn das Attribut "domain" der zugehörigen Relation "attribute_type" ebenfalls einen Eintrag hat. Wenn beide Attribute nicht NULL sind, dann muss der "value_list_value“ von "default_value" aus der "domain" zugeordneten "value_list" stammen.';
       WHEN 12 THEN
