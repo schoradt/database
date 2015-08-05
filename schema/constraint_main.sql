@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.08.2015
+ * - fixed arguments for check_constraint_27 call
+ *
  * changelog from 13.07.2015
  * - fixed wrong parameters for check constraint functions in
  *   check_value_list_x_value_list_u
@@ -700,7 +703,7 @@ CREATE OR REPLACE FUNCTION check_attribute_type_x_attribute_type_u(varchar, uuid
     END IF;
 
     -- check constraint 27
-    IF (check_constraint_27(_schema, _new_attribute_type_1_id,
+    IF (check_constraint_27(_new_attribute_type_1_id,
                             _new_attribute_type_2_id)) THEN
       RETURN true;
     END IF;
