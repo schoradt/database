@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.08.2015
+ * - added independent primary key to table meta_data
+ *
  * changelog from 21.07.2015
  * - added new column project_id to table topic_characteristic 
  * - removed unique constraint from meta_data
@@ -252,7 +255,8 @@ CREATE TABLE "relationship_type_to_topic_characteristic"
 
 CREATE TABLE "meta_data"
 (
-  "object_id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+  "object_id" uuid NOT NULL,
   "table_name" varchar NOT NULL CHECK ("public".table_exists("table_name")),
   "pk_column" varchar NOT NULL CHECK ("public".column_exists("pk_column", "table_name")),
   "data" jsonb NOT NULL

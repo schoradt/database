@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.08.2015
+ * - added independent primary key to table meta_data
+ *
  * changelog from 10.07.2015
  * - removed the composite primary key from attribtue_type_x_attribute_type,
  *   value_list_x_value_list, value_list_values_x_value_list_values and
@@ -334,7 +337,8 @@ CREATE TABLE "attribute_value_geomz"
 
 CREATE TABLE "meta_data"
 (
-  "object_id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+  "object_id" uuid NOT NULL,
   "table_name" varchar NOT NULL CHECK ("public".table_exists("table_name")),
   "pk_column" varchar NOT NULL CHECK ("public".column_exists("pk_column", "table_name")),
   "data" jsonb NOT NULL
