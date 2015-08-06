@@ -24,7 +24,14 @@ SET search_path TO "public";
 SET CLIENT_ENCODING TO "UTF8";
 
 
-/*
+/**
+ * This cast is necessary to convert varchar data automatically to json.
+ */
+CREATE CAST (varchar AS json) WITHOUT FUNCTION AS IMPLICIT;
+
+
+
+/**
  * This function creates a UUUID version 4.
  *
  * @state   stable
