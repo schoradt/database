@@ -1,5 +1,10 @@
 /*
- * * changelog from 30.06.2015
+ * changelog from 06.08.2015
+ * - normalized setting keys to own table
+ * - settings will now reference to projects not the other way around
+ * - changed timezone definition
+ *
+ * changelog from 30.06.2015
  * - added gt_pk_metadata_table for GeoServer metadata
  *
  * changelog from 08.05.2015
@@ -35,45 +40,31 @@ SET CLIENT_ENCODING TO "UTF8";
 --------------------------------------------------------------------------------
 -------------------------- table definition ------------------------------------
 --------------------------------------------------------------------------------
--- normalized table for logger which holds the name of the log triggered
--- class
+-- normalized table for the name of the log triggered class
 CREATE TABLE "logger"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "logger" varchar NOT NULL
 );
 
-
--- normalized table for level which holds the log level information
+-- normalized table for the log level
 CREATE TABLE "level"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "level" varchar NOT NULL
 );
 
-
--- table for stroring OpenInfRA log events
+-- table for storing OpenInfRA log events
 CREATE TABLE "log"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "user_id" uuid NOT NULL,
   "user_name" varchar NOT NULL,
-  "created_on" timestamp with time zone NOT NULL,
+  "created_on" timestamp NOT NULL,
   "logger" uuid NOT NULL REFERENCES "logger" ("id"),
   "level" uuid NOT NULL REFERENCES "level" ("id"),
   "message" text NOT NULL
 );
-
-
--- table for storing OpenInfRA settings
-CREATE TABLE "settings"
-(
-  "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "key" varchar NOT NULL,
-  "value" varchar NOT NULL,
-  "updated_on" timestamp with time zone NOT NULL
-);
-
 
 -- normalized table for server names or ip addresses
 CREATE TABLE "servers"
@@ -82,7 +73,6 @@ CREATE TABLE "servers"
   "server" varchar
 );
 
-
 -- normalized table for server ports
 CREATE TABLE "ports"
 (
@@ -90,14 +80,12 @@ CREATE TABLE "ports"
   "port" integer
 );
 
-
 -- normalized table for database names
 CREATE TABLE "databases"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "database" varchar
 );
-
 
 -- normalized table for schema names
 CREATE TABLE "schemas"
@@ -130,8 +118,24 @@ CREATE TABLE "projects"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "database_connection_id" uuid NOT NULL REFERENCES "database_connection" ("id"),
-  "settings" uuid REFERENCES "settings" ("id"),
   "is_subproject" boolean NOT NULL DEFAULT 'false'
+);
+
+-- normalized table for the setting keys used in settings
+CREATE TABLE "setting_keys"
+(
+  "id" uuid PRIMARY KEY DEFAULT create_uuid(),
+  "key" varchar NOT NULL
+);
+
+-- table for storing OpenInfRA settings
+CREATE TABLE "settings"
+(
+  "id" uuid PRIMARY KEY DEFAULT create_uuid(),
+  "key" uuid NOT NULL REFERENCES "setting_keys" ("id"),
+  "value" varchar NOT NULL,
+  "updated_on" timestamp NOT NULL,
+  "project" uuid REFERENCES "projects" ("id") -- can be NULL
 );
 
 -- Table for storing GeoServer relatated metadata for spatial tables and views.
