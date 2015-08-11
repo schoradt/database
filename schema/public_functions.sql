@@ -1,4 +1,7 @@
 /**
+ * changelog from 10.08.2015
+ * - added new CASTs to let the database care about special data treatment
+ *
  * changelog from 03.06.2015
  * - add stable function array_agg_mult
  * - add experimental function init_geom_views
@@ -29,6 +32,12 @@ SET CLIENT_ENCODING TO "UTF8";
  */
 CREATE CAST (varchar AS json) WITHOUT FUNCTION AS IMPLICIT;
 
+/**
+ * This cast is necessary to convert geojson data as varchar automatically to
+ * geometry.
+ */
+CREATE CAST (varchar AS geometry) WITH FUNCTION ST_GeomFromGeoJSON(text)
+    AS IMPLICIT;
 
 
 /**
