@@ -8,7 +8,7 @@ REM without further prompt!
 setlocal
 
 REM script version
-SET version=0.1
+SET version=0.2
 
 REM set default variables
 SET "host=localhost"
@@ -25,6 +25,7 @@ SET "p_palatin=0"
 SET "p_test=0"
 SET "database=0"
 SET "constraints=0"
+SET "rbac=0"
 SET "public=0"
 SET "meta=0"
 SET "system=0"
@@ -156,6 +157,7 @@ IF NOT "%1"=="" (
     SET "constraints=1"
     SET "public=1"
     SET "meta=1"
+    SET "rbac=1"
     SET "system=1"
     SET "project=1"
     SET "p_baalbek=0"
@@ -167,16 +169,13 @@ IF NOT "%1"=="" (
     SET "constraints=1"
     SET "public=1"
     SET "meta=1"
+    SET "rbac=1"
     SET "system=1"
     SET "project=1"
     SET "p_baalbek=0"
     SET "p_palatin=0"
     SET "p_test=1"
   )
-  
-  REM setting for reinstall the database
-  IF "%1"=="-b" SET "database=1"
-  IF "%1"=="--database" SET "database=1"
   
   REM setting for install constraints
   IF "%1"=="-c" SET "constraints=1"
@@ -186,15 +185,19 @@ IF NOT "%1"=="" (
   IF "%1"=="-l" SET "public=1"
   IF "%1"=="--public" SET "public=1"
   
-  REM setting for install meta database
+  REM setting for install schema for meta data
   IF "%1"=="-m" SET "meta=1"
   IF "%1"=="--meta" SET "meta=1"
   
-  REM setting for install system database
+  REM setting for install schema for role based access control
+  IF "%1"=="-b" SET "rbac=1"
+  IF "%1"=="--rbac" SET "rbac=1"
+  
+  REM setting for install schema for system data
   IF "%1"=="-s" SET "system=1"
   IF "%1"=="--system" SET "system=1"
   
-  REM setting for install project database
+  REM setting for install schema for project data
   IF "%1"=="-r" (
     IF NOT "%2%"=="" (
       SET "project=1"
@@ -272,12 +275,12 @@ REM output for help option
   ECHO.
   ECHO Install options:
   ECHO   -a, --all             install all scripts
-  ECHO   -b, --database        reinstall the database
   ECHO   -c, --constraints     install constraints
   ECHO   -l, --public          install public functions
-  ECHO   -m, --meta            install meta database
-  ECHO   -s, --system          install system database
-  ECHO   -r, --project ARG     install project data (%projects%)
+  ECHO   -m, --meta            install schema for meta data
+  ECHO   -b, --rbac            install schema for role based access control
+  ECHO   -s, --system          install schema for system data
+  ECHO   -r, --project ARG     install schema for project data (%projects%)
   ECHO.
   ECHO Connection options:
   ECHO   -h, --host ARG        hostname of the database server (default: "%host%")
@@ -332,6 +335,9 @@ REM install process
   
   REM install the meta database
   IF "%meta%"=="1" GOTO meta
+  
+  REM install schema for role based access control
+  IF "%rbac%"=="1" GOTO rbac
   
   REM install the system database
   IF "%system%"=="1" GOTO system
@@ -425,6 +431,24 @@ REM install meta database
   GOTO installloop
   
   
+REM install schema for role based access control
+:rbac
+  ECHO.
+  ECHO.
+  ECHO Install schema for role based access control
+  ECHO ============================================
+  %commandFile% "schema\rbac_schema.sql"
+  
+  ECHO.
+  ECHO.
+  ECHO Install data for role based access control
+  ECHO ==========================================
+  %commandFile% "data\rbac_data.sql" -q
+  
+  SET "rbac=0"
+  GOTO installloop
+
+
 REM install system database
 :system
   ECHO.

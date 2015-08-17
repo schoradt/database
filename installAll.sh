@@ -75,6 +75,16 @@ echo -e "=============================="
 psql -p $port -U $user -d $database -1 -f "data/meta_data.sql" -q
 
 
+# install schema for role based access control
+echo -e "\n\ninstall schema for role based access control"
+echo -e "============================================"
+psql -p $port -U $user -d $database -1 -f "schema/rbac_schema.sql"
+
+echo -e "\n\ninstall data for meta database"
+echo -e "=============================="
+psql -p $port -U $user -d $database -1 -f "data/rbac_data.sql" -q
+
+
 # install system database and add content
 echo -e "\n\ninstall schema for system database"
 echo -e "=================================="
