@@ -1,4 +1,7 @@
 /*
+ * changelog from 03.09.2015
+ * - added unique constraints to several tables
+ *
  * changelog from 06.08.2015
  * - normalized setting keys to own table
  * - settings will now reference to projects not the other way around
@@ -44,14 +47,14 @@ SET CLIENT_ENCODING TO "UTF8";
 CREATE TABLE "logger"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "logger" varchar NOT NULL
+  "logger" varchar NOT NULL UNIQUE
 );
 
 -- normalized table for the log level
 CREATE TABLE "level"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "level" varchar NOT NULL
+  "level" varchar NOT NULL UNIQUE
 );
 
 -- table for storing OpenInfRA log events
@@ -70,28 +73,28 @@ CREATE TABLE "log"
 CREATE TABLE "servers"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "server" varchar
+  "server" varchar UNIQUE
 );
 
 -- normalized table for server ports
 CREATE TABLE "ports"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "port" integer
+  "port" integer UNIQUE
 );
 
 -- normalized table for database names
 CREATE TABLE "databases"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "database" varchar
+  "database" varchar UNIQUE
 );
 
 -- normalized table for schema names
 CREATE TABLE "schemas"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "schema" varchar
+  "schema" varchar UNIQUE
 );
 
 -- normalized table for connection credentials
@@ -99,7 +102,8 @@ CREATE TABLE "credentials"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "username" varchar NOT NULL,
-  "password" varchar NOT NULL
+  "password" varchar NOT NULL,
+  UNIQUE ("username", "password")
 );
 
 -- table for storing database connections and their credentials (password as md5)
@@ -125,7 +129,7 @@ CREATE TABLE "projects"
 CREATE TABLE "setting_keys"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "key" varchar NOT NULL
+  "key" varchar NOT NULL UNIQUE
 );
 
 -- table for storing OpenInfRA settings

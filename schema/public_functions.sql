@@ -1,4 +1,8 @@
 /**
+ * changelog from 03.09.2015
+ * - added drop to CASTs
+ * - added UUID parameter to method rename_project_schema
+ *
  * changelog from 10.08.2015
  * - added new CASTs to let the database care about special data treatment
  *
@@ -30,12 +34,14 @@ SET CLIENT_ENCODING TO "UTF8";
 /**
  * This cast is necessary to convert varchar data automatically to json.
  */
+DROP CAST IF EXISTS (varchar AS json);
 CREATE CAST (varchar AS json) WITHOUT FUNCTION AS IMPLICIT;
 
 /**
  * This cast is necessary to convert geojson data as varchar automatically to
  * geometry.
  */
+ DROP CAST IF EXISTS (varchar AS geometry);
 CREATE CAST (varchar AS geometry) WITH FUNCTION ST_GeomFromGeoJSON(text)
     AS IMPLICIT;
 
@@ -74,14 +80,16 @@ CREATE AGGREGATE public.array_agg_mult(ANYARRAY)  (
  *
  * @state   stable
  * @input   varchar: name of the project for comment - DEFAULT 'no name project'
+ *          uuid     the UUID of the project (if no project exists in the schema)
  * @output  boolean: returns true if renaming was successful, else false
  */
-CREATE OR REPLACE FUNCTION public.rename_project_schema(varchar DEFAULT 'no name project')
+CREATE OR REPLACE FUNCTION public.rename_project_schema(
+    _project_name varchar DEFAULT 'no name project',
+    _uuid UUID DEFAULT NULL)
   RETURNS boolean AS $$
   DECLARE
-    _project_name ALIAS FOR $1;
     _new_schema_name varchar;
-    _uuid uuid;
+    _db_uuid uuid;
   BEGIN
 
     -- check if a project schema exists
@@ -95,8 +103,20 @@ CREATE OR REPLACE FUNCTION public.rename_project_schema(varchar DEFAULT 'no name
     -- retrieve uuid from the relation "project" of the project schema that has
     -- no subprojects
     EXECUTE 'SET search_path TO project';
-    SELECT "id" INTO _uuid FROM "project" WHERE "subproject_of" IS NULL;
+    SELECT "id" INTO _db_uuid FROM "project" WHERE "subproject_of" IS NULL;
 
+    -- determine that we retrieved an UUID from the database
+    IF (_db_uuid IS NULL) THEN
+      -- determine that the passed UUID is not null
+      IF (_uuid IS NULL) THEN
+        RAISE EXCEPTION 'No UUID was specified neither in the database nor as passed argument.';
+        return false;
+      END IF;
+    ELSE
+      -- the UUID from the database is more important than the passed UUID
+      _uuid = _db_uuid;
+    END IF;
+    
     -- construct new schema name
     _new_schema_name := 'project_' || _uuid;
 
