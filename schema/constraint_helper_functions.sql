@@ -1418,7 +1418,7 @@ CREATE OR REPLACE FUNCTION check_multiplicity_for_att
     _new_multiplicity ALIAS FOR $4;
     _att_pk_record record;
     _ata_record record;
-    _at_ag_array jsonb;
+    _at_ag_array json;
     _att_multiplicity integer := 0;
     _ata_multiplicity integer := 0;
     _at_m integer := 0;
