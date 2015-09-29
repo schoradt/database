@@ -1,4 +1,7 @@
 /**
+ * changelog from 23.09.2015
+ * - added new CAST for UUIDs
+ *
  * changelog from 03.09.2015
  * - added drop to CASTs
  * - added UUID parameter to method rename_project_schema
@@ -41,10 +44,15 @@ CREATE CAST (varchar AS json) WITHOUT FUNCTION AS IMPLICIT;
  * This cast is necessary to convert geojson data as varchar automatically to
  * geometry.
  */
- DROP CAST IF EXISTS (varchar AS geometry);
+DROP CAST IF EXISTS (varchar AS geometry);
 CREATE CAST (varchar AS geometry) WITH FUNCTION ST_GeomFromGeoJSON(text)
     AS IMPLICIT;
 
+/**
+ * This cast is necessary to insert null values in UUID columns.
+ */
+DROP CAST IF EXISTS (varchar AS uuid);
+CREATE CAST (varchar AS uuid) WITH INOUT AS IMPLICIT; 
 
 /**
  * This function creates a UUUID version 4.
