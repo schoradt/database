@@ -26,17 +26,25 @@ INSERT INTO "role" VALUES ('9b3e5f1b-c720-4242-a9d5-c243b68fc301','sysguest','De
 INSERT INTO "permission" VALUES ('97e4d76e-9e40-43a1-b1f5-e9e1e7ca147e','permission for root','*:*:*');
 INSERT INTO "permission" VALUES ('8e618e6b-7f07-471e-95b4-9af66c6acfe8','permission for reading system database','/system:r');
 INSERT INTO "permission" VALUES ('1fbfd6eb-4b48-4819-829d-59909caf4b7c','permission for reading and writing system database','/system:r,w');
-INSERT INTO "permission" VALUES ('f1bccb1a-4485-4bdb-ac80-9841473d1679','permission for accessing only the Baalbek project','/projects/{id}:*:fd27a347-4e33-4ed7-aebc-eeff6dbf1054');
+INSERT INTO "permission" VALUES ('5fdf7895-3717-476d-8373-fc56a60350aa','permission for reading and writing rbac database','/rbac:r,w');
 
+-- root
 INSERT INTO "role_permissions" VALUES ('2a5d3193-1bef-4bec-9fee-9142806af191','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce','97e4d76e-9e40-43a1-b1f5-e9e1e7ca147e');
-INSERT INTO "role_permissions" VALUES ('a66e9e00-e0a2-44f2-8de8-0256b256e30a','aef02838-4b92-44e4-bf6a-dc8655b6844b','8e618e6b-7f07-471e-95b4-9af66c6acfe8');
-INSERT INTO "role_permissions" VALUES ('d562c5b6-8e59-418a-9a4c-7f2cfedc1a86','9b3e5f1b-c720-4242-a9d5-c243b68fc301','1fbfd6eb-4b48-4819-829d-59909caf4b7c');
-INSERT INTO "role_permissions" VALUES ('ad048dda-a52a-4d4c-81eb-205b1f4723cb','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771','f1bccb1a-4485-4bdb-ac80-9841473d1679');
+-- systemguest
+INSERT INTO "role_permissions" VALUES ('a66e9e00-e0a2-44f2-8de8-0256b256e30a','9b3e5f1b-c720-4242-a9d5-c243b68fc301','8e618e6b-7f07-471e-95b4-9af66c6acfe8');
+-- syseditor
+INSERT INTO "role_permissions" VALUES ('d562c5b6-8e59-418a-9a4c-7f2cfedc1a86','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771','1fbfd6eb-4b48-4819-829d-59909caf4b7c');
+-- sysadmin
+INSERT INTO "role_permissions" VALUES ('ad048dda-a52a-4d4c-81eb-205b1f4723cb','aef02838-4b92-44e4-bf6a-dc8655b6844b','5fdf7895-3717-476d-8373-fc56a60350aa');
 
+-- root
 INSERT INTO "subject_roles" VALUES ('dbf31f00-d571-447e-bd9a-b6d57177d3c6','10886546-8af3-4bb1-b74e-c4d14cd47451','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
-INSERT INTO "subject_roles" VALUES ('af7e691e-afcf-48f0-91b8-782f9687f078','7135e8dd-3d68-4d40-9a6b-80a458a9f385','aef02838-4b92-44e4-bf6a-dc8655b6844b');
-INSERT INTO "subject_roles" VALUES ('10f7d87b-23cb-46e9-b1ae-a754b5557a4a','6142ba53-3b24-4c0a-bc8b-18968e058d9a','9b3e5f1b-c720-4242-a9d5-c243b68fc301');
-INSERT INTO "subject_roles" VALUES ('7110e1e4-21cb-4442-8780-3eeebe547295','929632fc-a4c6-400a-9ef3-549276f91b40','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771');
+-- sysadmin
+INSERT INTO "subject_roles" VALUES ('af7e691e-afcf-48f0-91b8-782f9687f078','4e5f2209-4397-4eb4-93c7-2002f3a38cdd','aef02838-4b92-44e4-bf6a-dc8655b6844b');
+-- sysguest
+INSERT INTO "subject_roles" VALUES ('10f7d87b-23cb-46e9-b1ae-a754b5557a4a','e9f00ee1-7687-4534-b938-f4c3e5367479','9b3e5f1b-c720-4242-a9d5-c243b68fc301');
+-- syseditor
+INSERT INTO "subject_roles" VALUES ('7110e1e4-21cb-4442-8780-3eeebe547295','4f04b79b-4ef3-49b6-a99f-bb187c4d7ca0','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771');
 
 INSERT INTO "project_related_roles" VALUES ('0624533e-a8b0-4786-b590-885e414c88fe','projectadmin','Projektadministrator');
 INSERT INTO "project_related_roles" VALUES ('444749dc-d645-4ce8-9e01-c21d685ab690','projecteditor','Projektbearbeiter');
