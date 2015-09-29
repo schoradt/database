@@ -72,6 +72,34 @@ CREATE TABLE "subject_roles" (
  UNIQUE ("subject", "role")
 );
 
+CREATE TABLE "project_related_roles" (
+ "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+ "name" varchar,
+ "description" varchar
+);
+
+CREATE TABLE "subject_projects" (
+ "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+ "subject" uuid NOT NULL REFERENCES "subject" ("id"),
+ "project_related_role" uuid NOT NULL REFERENCES "project_related_roles" ("id"),
+ "project_id" uuid NOT NULL,
+ UNIQUE ("subject", "project_related_role", "project_id")
+);
+
+CREATE TABLE "openinfra_objects" (
+ "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+ "name" varchar,
+ "description" varchar
+);
+
+CREATE TABLE "subject_objects" (
+ "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
+ "subject" uuid NOT NULL REFERENCES "subject" ("id"),
+ "openinfra_objects" uuid NOT NULL REFERENCES "openinfra_objects" ("id"),
+ "project_id" uuid NOT NULL,
+ UNIQUE ("subject", "openinfra_objects", "project_id")
+);
+
 CREATE TABLE "password_blacklist"
 (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
