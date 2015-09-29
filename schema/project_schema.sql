@@ -1,5 +1,8 @@
 /*
  * changelog from 05.08.2015
+ * - changed jsonb to json in table meta_data
+ *
+ * changelog from 05.08.2015
  * - added independent primary key to table meta_data
  *
  * changelog from 10.07.2015
@@ -341,5 +344,5 @@ CREATE TABLE "meta_data"
   "object_id" uuid NOT NULL,
   "table_name" varchar NOT NULL CHECK ("public".table_exists("table_name")),
   "pk_column" varchar NOT NULL CHECK ("public".column_exists("pk_column", "table_name")),
-  "data" jsonb NOT NULL
+  "data" json NOT NULL
 )
