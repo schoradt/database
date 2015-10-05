@@ -62,7 +62,8 @@ CREATE TABLE "subject"
   "default_language" varchar NOT NULL,
   "created_on" timestamp NOT NULL,
   "updated_on" timestamp,
-  "last_login_on" timestamp
+  "last_login_on" timestamp,
+  "webapp" varchar
 );
 
 CREATE TABLE "subject_roles" (
@@ -96,8 +97,10 @@ CREATE TABLE "subject_objects" (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
  "subject" uuid NOT NULL REFERENCES "subject" ("id"),
  "openinfra_objects" uuid NOT NULL REFERENCES "openinfra_objects" ("id"),
+ "object_id" uuid NOT NULL,
+ "object_write" boolean NOT NULL,
  "project_id" uuid NOT NULL,
- UNIQUE ("subject", "openinfra_objects", "project_id")
+ UNIQUE ("subject", "openinfra_objects", "object_id", "project_id")
 );
 
 CREATE TABLE "password_blacklist"
