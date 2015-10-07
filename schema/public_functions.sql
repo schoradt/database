@@ -1,4 +1,8 @@
-/**
+/*
+ * changelog from 06.10.2015
+ * - added new function to synchronize the content of the system schema into a
+ *   project schema
+ *
  * changelog from 23.09.2015
  * - added new CAST for UUIDs
  *
@@ -34,13 +38,13 @@ SET search_path TO "public";
 SET CLIENT_ENCODING TO "UTF8";
 
 
-/**
+/*
  * This cast is necessary to convert varchar data automatically to json.
  */
 DROP CAST IF EXISTS (varchar AS json);
 CREATE CAST (varchar AS json) WITHOUT FUNCTION AS IMPLICIT;
 
-/**
+/*
  * This cast is necessary to convert geojson data as varchar automatically to
  * geometry.
  */
@@ -48,13 +52,13 @@ DROP CAST IF EXISTS (varchar AS geometry);
 CREATE CAST (varchar AS geometry) WITH FUNCTION ST_GeomFromGeoJSON(text)
     AS IMPLICIT;
 
-/**
+/*
  * This cast is necessary to insert null values in UUID columns.
  */
 DROP CAST IF EXISTS (varchar AS uuid);
 CREATE CAST (varchar AS uuid) WITH INOUT AS IMPLICIT; 
 
-/**
+/*
  * This function creates a UUUID version 4.
  *
  * @state   stable
@@ -67,7 +71,7 @@ CREATE OR REPLACE FUNCTION public.create_uuid()
 
 
 
-/**
+/*
  * Allows aggregation of arrays returning a nested array.
  *
  * @state   stable
@@ -460,7 +464,7 @@ CREATE OR REPLACE FUNCTION public.create_view(varchar, uuid, text[],
  * @state   experimental
  *
  * @input   varchar:  project schema name,
- * @input   UUID:  locale_id of attributes
+ *          UUID:  locale_id of attributes
  * @output  void
  */
 CREATE OR REPLACE FUNCTION public.init_geom_views(
@@ -555,3 +559,81 @@ BEGIN
   END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+/*
+ * This method copies the content of the system schema into the project schema
+ * that matches to the passed project id.
+ *
+ * TODO: their is no proof of uniqueness if in the project schema an identical
+ *       entry with a different primary key exists 
+ *
+ * @state   experimental
+ *
+ * @input   UUID:  project schema name,
+ * @output  void
+ */
+CREATE OR REPLACE FUNCTION public.merge_system_schema(_project_id UUID)
+  RETURNS boolean AS $$
+  DECLARE
+    _target_schema varchar;
+    _table_name varchar;
+    _pk_column varchar;
+    _tables varchar[][];
+    _table varchar;
+    _tmp bigint;
+  BEGIN
+    _target_schema := 'project_'|| _project_id;
+
+    -- check if the target project schema exists
+    EXECUTE 'SELECT count("schema_name")
+               FROM "information_schema"."schemata" 
+              WHERE "schema_name" = '|| quote_literal(_target_schema) INTO _tmp;
+    IF (_tmp < 1) THEN
+      RAISE EXCEPTION 'The project schema "%" does not exist.', _target_schema;
+      RETURN false;
+    END IF;
+    
+    -- add the table name and the name of the primary key as continuous list
+    _tables := '{character_code, id,
+                 country_code, id,
+                 language_code, id,
+                 pt_locale, id,
+                 multiplicity, id,
+                 pt_free_text, id,
+                 localized_character_string, pt_free_text_id,
+                 value_list, id,
+                 value_list_x_value_list, id,
+                 value_list_values, id,
+                 value_list_values_x_value_list_values, id,
+                 attribute_type, id,
+                 attribute_type_x_attribute_type, id,
+                 attribute_type_group, id,
+                 topic_characteristic, id,
+                 attribute_type_group_to_topic_characteristic, id,
+                 attribute_type_to_attribute_type_group, id,
+                 relationship_type, id,
+                 relationship_type_to_topic_characteristic, id,
+                 meta_data, id}';
+    
+    EXECUTE 'SET search_path TO '|| quote_ident(_target_schema) ||', constraints, public';
+
+    FOR i IN 1..array_length(_tables,1) BY 2 LOOP
+      RAISE NOTICE 'merging table "%"', _tables[i];
+      IF (_tables[i] = 'topic_characteristic') THEN
+        -- add the project id to all topic_characteristic entries
+        EXECUTE 'INSERT INTO '|| quote_ident(_target_schema) ||'.'|| quote_ident(_tables[i] )||' 
+                   SELECT "id", "description", "topic", '|| quote_literal(_project_id) ||' FROM system.'|| quote_ident(_tables[i]) ||' WHERE '|| quote_ident(_tables[i+1]) ||' NOT IN (
+                     SELECT '|| quote_ident(_tables[i+1]) ||' FROM '|| quote_ident(_target_schema) ||'.'|| quote_ident(_tables[i]) ||')';
+      ELSE
+        EXECUTE 'INSERT INTO '|| quote_ident(_target_schema) ||'.'|| quote_ident(_tables[i] )||' 
+                   SELECT * FROM system.'|| quote_ident(_tables[i]) ||' WHERE '|| quote_ident(_tables[i+1]) ||' NOT IN (
+                     SELECT '|| quote_ident(_tables[i+1]) ||' FROM '|| quote_ident(_target_schema) ||'.'|| quote_ident(_tables[i]) ||')';
+      END IF;
+    END LOOP;
+    
+    RETURN true;
+
+  END;
+  $$ LANGUAGE 'plpgsql';
