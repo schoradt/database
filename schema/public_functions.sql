@@ -1,4 +1,7 @@
 /*
+ * changelog from 13.10.2015
+ * - add new function to remove a project schema
+ * 
  * changelog from 06.10.2015
  * - added new function to synchronize the content of the system schema into a
  *   project schema
@@ -571,8 +574,7 @@ $$ LANGUAGE plpgsql;
  *
  * @state   experimental
  *
- * @input   UUID:  project schema name,
- * @output  void
+ * @input   UUID:  id of the project schema
  */
 CREATE OR REPLACE FUNCTION public.merge_system_schema(_project_id UUID)
   RETURNS boolean AS $$
@@ -633,6 +635,50 @@ CREATE OR REPLACE FUNCTION public.merge_system_schema(_project_id UUID)
       END IF;
     END LOOP;
     
+    RETURN true;
+
+  END;
+  $$ LANGUAGE 'plpgsql';
+  
+  
+/*
+ * This method removes a project schema that fits to the passed UUID.
+ *
+ * @state   experimental
+ *
+ * @input   UUID:  id of the project schema that should be removed
+ */
+CREATE OR REPLACE FUNCTION public.delete_project_schema(_project_id UUID)
+  RETURNS boolean AS $$
+  DECLARE
+    _project_schema varchar;
+    _tmp bigint;
+  BEGIN
+    _project_schema := 'project_'|| _project_id;
+
+    -- check if the project schema exists
+    EXECUTE 'SELECT count("schema_name")
+               FROM "information_schema"."schemata" 
+              WHERE "schema_name" = '|| quote_literal(_project_schema) INTO _tmp;
+    IF (_tmp < 1) THEN
+      RAISE EXCEPTION 'The project schema "%" does not exist.', _project_schema;
+      RETURN false;
+    END IF;
+    
+    -- check if their are no entries in the meta data schema that fits to this
+    -- project id
+    EXECUTE 'SELECT count(*) FROM "meta_data"."projects" WHERE project_id = '
+            || quote_literal(_project_id) INTO _tmp;
+    IF (_tmp > 0) THEN
+        RAISE EXCEPTION 'The schema "project_%" seems to be still in use. Please check the table "projects" in the meta data schema.', _project_id;
+        RETURN false;
+    END IF;
+    
+    -- remove the project schema
+    EXECUTE 'DROP SCHEMA '|| quote_ident(_project_schema) ||' CASCADE';
+    
+    -- remove the entries from the table meta_data.gt_pk_metadata_table
+    EXECUTE 'DELETE FROM "meta_data"."gt_pk_metadata_table" WHERE "table_schema" = '|| quote_literal(_project_schema);
     RETURN true;
 
   END;
