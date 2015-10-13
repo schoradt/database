@@ -48,6 +48,7 @@ CREATE TABLE "role_permissions" (
 -- This table must not be named 'user' since this is already a specific
 -- postgres table which might lead to an exception. Thus, this is renamed
 -- to subject which is used by shiro to name a user.
+-- status: -1 blocked, 0 inactive, 1 active
 CREATE TABLE "subject"
 (
   "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
