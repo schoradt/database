@@ -21,13 +21,13 @@ INSERT INTO "database_connection" VALUES ('56277561-828b-43d7-b0de-887dc76c3d3e'
 INSERT INTO "database_connection" VALUES ('83be7b2b-557f-4f56-8335-4bef3f31750a', 'f3846ecf-0ace-4b5e-bc11-a0fb1ad980a4', '092819af-afc8-41f5-9baf-228dad0447b5', '90f6fa51-2342-45e2-a1c9-b5da1e62061c', 'fe625f67-6224-4652-b26f-723583ecd4e0', 'affa3f0c-ee2b-487b-9584-c81a0139fc14');
 
 -- test data for projects
-INSERT INTO "projects" VALUES ('fd27a347-4e33-4ed7-aebc-eeff6dbf1054', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', false); -- Baalbek
-INSERT INTO "projects" VALUES ('32ba8c4d-6272-42f5-867e-2c5829c1f34e', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubProject1
-INSERT INTO "projects" VALUES ('95c1d361-3643-4ced-a712-21d8c9a03622', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubProject2
-INSERT INTO "projects" VALUES ('61101fc6-e4a1-421e-8965-3e3a6f692af0', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubSubProject
-INSERT INTO "projects" VALUES ('f17a0adc-bc0c-47e0-92ba-92e9bde75e0f', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubSubSubProject
-INSERT INTO "projects" VALUES ('7d431941-eece-48ac-bce5-3062d8d32e76', '56277561-828b-43d7-b0de-887dc76c3d3e', false); -- Palatin
-INSERT INTO "projects" VALUES ('e7d42bff-4e40-4f43-9d1b-1dc5a190cd75', '83be7b2b-557f-4f56-8335-4bef3f31750a', false); -- Test
+INSERT INTO "projects" VALUES ('4c113731-11bd-4b96-b2dd-b71743dbfece', 'fd27a347-4e33-4ed7-aebc-eeff6dbf1054', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', false); -- Baalbek
+INSERT INTO "projects" VALUES ('ddb717f8-3a74-4e66-a586-67cc0ea1e359', '32ba8c4d-6272-42f5-867e-2c5829c1f34e', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubProject1
+INSERT INTO "projects" VALUES ('889e34fb-584e-4de2-b233-b6f6ea5a88a5', '95c1d361-3643-4ced-a712-21d8c9a03622', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubProject2
+INSERT INTO "projects" VALUES ('650abf79-8b9b-4465-8d73-95eadb83c0f0', '61101fc6-e4a1-421e-8965-3e3a6f692af0', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubSubProject
+INSERT INTO "projects" VALUES ('e86bb9bf-614d-48ed-b125-fc5b9955e2f3', 'f17a0adc-bc0c-47e0-92ba-92e9bde75e0f', 'a3791c08-a13b-4cad-8f2e-bb2871b89518', true); -- testExt_SubSubSubProject
+INSERT INTO "projects" VALUES ('dc2461c8-a2eb-40c0-b41f-23c9069ccf0c', '7d431941-eece-48ac-bce5-3062d8d32e76', '56277561-828b-43d7-b0de-887dc76c3d3e', false); -- Palatin
+INSERT INTO "projects" VALUES ('d3ecb3c4-b986-462b-860b-05faea3b4702', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75', '83be7b2b-557f-4f56-8335-4bef3f31750a', false); -- Test
 
 -- test data for setting keys
 INSERT INTO "setting_keys" VALUES ('e9da4346-ceee-4317-993f-73d0d07404a0', 'de.btu.openinfra.backend.rest.defaultOffset');

@@ -1,4 +1,7 @@
 /*
+ * changelog from 13.10.2015
+ * - added new primary key to projects table
+ *
  * changelog from 03.09.2015
  * - added unique constraints to several tables
  *
@@ -121,6 +124,7 @@ CREATE TABLE "database_connection"
 CREATE TABLE "projects"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
+  "project_id" uuid NOT NULL,
   "database_connection_id" uuid NOT NULL REFERENCES "database_connection" ("id"),
   "is_subproject" boolean NOT NULL DEFAULT 'false'
 );
