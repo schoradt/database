@@ -28,7 +28,7 @@ INSERT INTO "permission" VALUES ('97e4d76e-9e40-43a1-b1f5-e9e1e7ca147e','permiss
 INSERT INTO "permission" VALUES ('8e618e6b-7f07-471e-95b4-9af66c6acfe8','permission for reading system database','/system:r');
 INSERT INTO "permission" VALUES ('1fbfd6eb-4b48-4819-829d-59909caf4b7c','permission for reading and writing system database','/system:r,w');
 INSERT INTO "permission" VALUES ('5fdf7895-3717-476d-8373-fc56a60350aa','permission for reading and writing rbac database','/rbac:r,w');
-INSERT INTO "permission" VALUES ('c906813d-2268-4f94-9dfb-a467e4340cd5','permission for creating new project schemas','/projects:w');
+INSERT INTO "permission" VALUES ('c906813d-2268-4f94-9dfb-a467e4340cd5','permission for creating new project schemas','/projects:r,w');
 
 -- root
 INSERT INTO "role_permissions" VALUES ('2a5d3193-1bef-4bec-9fee-9142806af191','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce','97e4d76e-9e40-43a1-b1f5-e9e1e7ca147e');
