@@ -28,6 +28,7 @@ SET "constraints=0"
 SET "rbac=0"
 SET "public=0"
 SET "meta=0"
+SET "file=0"
 SET "system=0"
 SET "project=0"
 
@@ -157,11 +158,12 @@ IF NOT "%1"=="" (
     SET "constraints=1"
     SET "public=1"
     SET "meta=1"
+    SET "file=1"
     SET "rbac=1"
     SET "system=1"
     SET "project=1"
-    SET "p_baalbek=0"
-    SET "p_palatin=0"
+    SET "p_baalbek=1"
+    SET "p_palatin=1"
     SET "p_test=1"
   )
   IF "%1"=="--all" (
@@ -169,11 +171,12 @@ IF NOT "%1"=="" (
     SET "constraints=1"
     SET "public=1"
     SET "meta=1"
+    SET "file=1"
     SET "rbac=1"
     SET "system=1"
     SET "project=1"
-    SET "p_baalbek=0"
-    SET "p_palatin=0"
+    SET "p_baalbek=1"
+    SET "p_palatin=1"
     SET "p_test=1"
   )
   
@@ -188,6 +191,10 @@ IF NOT "%1"=="" (
   REM setting for install schema for meta data
   IF "%1"=="-m" SET "meta=1"
   IF "%1"=="--meta" SET "meta=1"
+
+  REM setting for install schema for files
+  IF "%1"=="-f" SET "file=1"
+  IF "%1"=="--file" SET "file=1"
   
   REM setting for install schema for role based access control
   IF "%1"=="-b" SET "rbac=1"
@@ -201,13 +208,13 @@ IF NOT "%1"=="" (
   IF "%1"=="-r" (
     IF NOT "%2%"=="" (
       SET "project=1"
-      IF "%2"=="baalbek" ( SET "p_baalbek=0")
-      IF "%2"=="palatin" ( SET "p_palatin=0")
+      IF "%2"=="baalbek" ( SET "p_baalbek=1")
+      IF "%2"=="palatin" ( SET "p_palatin=1")
       IF "%2"=="test" ( SET "p_test=1")
     ) ELSE (
       SET "project=1"
-      SET "p_baalbek=0"
-      SET "p_palatin=0"
+      SET "p_baalbek=1"
+      SET "p_palatin=1"
       SET "p_test=1"
     )
     SHIFT
@@ -215,13 +222,13 @@ IF NOT "%1"=="" (
   IF "%1"=="-project" (
     IF NOT "%2%"=="" (
       SET "project=1"
-      IF "%2"=="baalbek" ( SET "p_baalbek=0")
-      IF "%2"=="palatin" ( SET "p_palatin=0")
+      IF "%2"=="baalbek" ( SET "p_baalbek=1")
+      IF "%2"=="palatin" ( SET "p_palatin=1")
       IF "%2"=="test" ( SET "p_test=1")
     ) ELSE (
       SET "project=1"
-      SET "p_baalbek=0"
-      SET "p_palatin=0"
+      SET "p_baalbek=1"
+      SET "p_palatin=1"
       SET "p_test=1"
     )
     SHIFT
@@ -279,6 +286,7 @@ REM output for help option
   ECHO   -l, --public          install public functions
   ECHO   -m, --meta            install schema for meta data
   ECHO   -b, --rbac            install schema for role based access control
+  ECHO   -f, --file            install schema for file service
   ECHO   -s, --system          install schema for system data
   ECHO   -r, --project ARG     install schema for project data (%projects%)
   ECHO.
@@ -336,6 +344,9 @@ REM install process
   REM install the meta database
   IF "%meta%"=="1" GOTO meta
   
+  REM install the file database
+  IF "%file%"=="1" GOTO file
+  
   REM install schema for role based access control
   IF "%rbac%"=="1" GOTO rbac
   
@@ -383,19 +394,19 @@ REM install constraints
   ECHO.
   ECHO Install constraint helper functions
   ECHO ===================================
-  %commandFile% "schema\constraint_helper_functions.sql"
+  %commandFile% "schema\trunk\constraint_helper_functions.sql"
   
   ECHO.
   ECHO.
   ECHO Install constraint check functions
   ECHO ==================================
-  %commandFile% "schema\constraint_check_functions.sql"
+  %commandFile% "schema\trunk\constraint_check_functions.sql"
   
   ECHO.
   ECHO.
   ECHO Install constraints
   ECHO ===================
-  %commandFile% "schema\constraint_main.sql"
+  %commandFile% "schema\trunk\constraint_main.sql"
   
   SET "constraints=0"
   GOTO installloop
@@ -407,7 +418,7 @@ REM install public functions
   ECHO.
   ECHO Install public functions
   ECHO ========================
-  %commandFile% "schema\public_functions.sql"
+  %commandFile% "schema\trunk\public_functions.sql"
   
   SET "public=0"
   GOTO installloop
@@ -419,31 +430,43 @@ REM install meta database
   ECHO.
   ECHO Install schema for meta database
   ECHO ================================
-  %commandFile% "schema\meta_database_schema.sql"
+  %commandFile% "schema\trunk\meta_database_schema.sql"
   
   ECHO.
   ECHO.
   ECHO Install data for meta database
   ECHO ==============================
-  %commandFile% "data\meta_data.sql" -q
+  %commandFile% "data\trunk\meta_data.sql" -q
   
   SET "meta=0"
   GOTO installloop
+
+
+REM install file database
+:file
+  ECHO.
+  ECHO.
+  ECHO Install schema for file service
+  ECHO ===============================
+  %commandFile% "schema\trunk\file_schema.sql" -q
   
-  
+  SET "file=0"
+  GOTO installloop
+
+
 REM install schema for role based access control
 :rbac
   ECHO.
   ECHO.
   ECHO Install schema for role based access control
   ECHO ============================================
-  %commandFile% "schema\rbac_schema.sql"
+  %commandFile% "schema\trunk\rbac_schema.sql"
   
   ECHO.
   ECHO.
   ECHO Install data for role based access control
   ECHO ==========================================
-  %commandFile% "data\rbac_data.sql" -q
+  %commandFile% "data\trunk\rbac_data.sql" -q
   
   SET "rbac=0"
   GOTO installloop
@@ -455,25 +478,25 @@ REM install system database
   ECHO.
   ECHO Install schema for system database
   ECHO ==================================
-  %commandFile% "schema\system_schema.sql"
+  %commandFile% "schema\trunk\system_schema.sql"
   
   ECHO.
   ECHO.
   ECHO Install system trigger
   ECHO ======================
-  %commandFile% "schema\system_trigger.sql"
+  %commandFile% "schema\trunk\system_trigger.sql"
   
   ECHO.
   ECHO.
   ECHO Install static value lists
   ECHO ==========================
-  %commandFile% "data\system_static_valuelist.sql" -q
+  %commandFile% "data\trunk\system_static_valuelist.sql" -q
   
   ECHO.
   ECHO.
   ECHO Install initial topic framework
   ECHO ===============================
-  %commandFile% "data\system_initial_topic_framework.sql" -q
+  %commandFile% "data\trunk\system_initial_topic_framework.sql" -q
   
   SET "system=0"
   GOTO installloop
@@ -490,13 +513,13 @@ REM install project database and trigger
     ECHO.
     ECHO Install schema for project database
     ECHO ===================================
-    %commandFile% "schema\project_schema.sql"
+    %commandFile% "schema\trunk\project_schema.sql"
   
     ECHO.
     ECHO.
     ECHO Install project trigger
     ECHO =======================
-    %commandFile% "schema\project_trigger.sql"
+    %commandFile% "schema\trunk\project_trigger.sql"
     
     SET "p_database=0"
   )
@@ -523,19 +546,19 @@ REM install project database and trigger
   ECHO.
   ECHO Install Baalbek geometry settings
   ECHO =================================
-  %commandFile% "data\project_baalbek_geom_settings.sql" -q
+  %commandFile% "data\trunk\project_baalbek_geom_settings.sql" -q
   
   ECHO.
   ECHO.
   ECHO Install Baalbek data
   ECHO ====================
-  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_baalbek_dump
+  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\trunk\project_baalbek_dump
   
   ECHO.
   ECHO.
   ECHO Install Baalbek meta data
   ECHO =========================
-  %commandFile% "data\project_baalbek_meta_data.sql" -q
+  %commandFile% "data\trunk\project_baalbek_meta_data.sql" -q
   
   ECHO.
   ECHO.
@@ -552,7 +575,7 @@ REM install project database and trigger
 
   ECHO Init indices for baalbek project
   ECHO ================================
-  %commandFile% "schema\project_indices.sql" -q
+  %commandFile% "schema/trunk/project_indices.sql" -q
   
   SET "p_baalbek=0"
   GOTO install
@@ -564,7 +587,7 @@ REM install project database and trigger
   ECHO.
   ECHO Install Palatin data
   ECHO ====================
-  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\project_palatin_dump
+  pg_restore -h %host% -p %port% -U %username% -d %db% --disable-triggers data\trunk\project_palatin_dump
   
   ECHO.
   ECHO.
@@ -582,8 +605,8 @@ REM install project database and trigger
   ECHO.
   ECHO Install Test data
   ECHO =================
-  %commandFile% "data\project_static_valuelist.sql" -q
-  %commandFile% "data\test.sql" -q
+  %commandFile% "data\trunk\project_static_valuelist.sql" -q
+  %commandFile% "data\trunk\test.sql" -q
   
   ECHO.
   ECHO.
