@@ -1,4 +1,8 @@
 /*
+ * changelog from 22.10.2015
+ * - changed names of join columns and username for table log
+ * - changed names of join columns for table database_connection
+ *
  * changelog from 13.10.2015
  * - added new primary key to projects table
  *
@@ -65,10 +69,10 @@ CREATE TABLE "log"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
   "user_id" uuid NOT NULL,
-  "user_name" varchar NOT NULL,
+  "username" varchar NOT NULL,
   "created_on" timestamp NOT NULL,
-  "logger" uuid NOT NULL REFERENCES "logger" ("id"),
-  "level" uuid NOT NULL REFERENCES "level" ("id"),
+  "logger_id" uuid NOT NULL REFERENCES "logger" ("id"),
+  "level_id" uuid NOT NULL REFERENCES "level" ("id"),
   "message" text NOT NULL
 );
 
@@ -113,11 +117,11 @@ CREATE TABLE "credentials"
 CREATE TABLE "database_connection"
 (
   "id" uuid PRIMARY KEY DEFAULT create_uuid(),
-  "server" uuid NOT NULL REFERENCES "servers" ("id"),
-  "port" uuid NOT NULL REFERENCES "ports" ("id"),
-  "database" uuid NOT NULL REFERENCES "databases" ("id"),
-  "schema" uuid NOT NULL REFERENCES "schemas" ("id"),
-  "credentials" uuid NOT NULL REFERENCES "credentials" ("id")
+  "server_id" uuid NOT NULL REFERENCES "servers" ("id"),
+  "port_id" uuid NOT NULL REFERENCES "ports" ("id"),
+  "database_id" uuid NOT NULL REFERENCES "databases" ("id"),
+  "schema_id" uuid NOT NULL REFERENCES "schemas" ("id"),
+  "credentials_id" uuid NOT NULL REFERENCES "credentials" ("id")
 );
 
 -- table for storing all projects that exists in this OpenInfRA instance
