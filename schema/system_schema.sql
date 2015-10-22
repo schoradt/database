@@ -1,4 +1,7 @@
 /*
+ * changelog from 21.10.2015
+ * - added unique constraint to table meta_data
+ *
  * changelog from 05.08.2015
  * - changed jsonb to json in table meta_data
  *
@@ -262,5 +265,6 @@ CREATE TABLE "meta_data"
   "object_id" uuid NOT NULL,
   "table_name" varchar NOT NULL CHECK ("public".table_exists("table_name")),
   "pk_column" varchar NOT NULL CHECK ("public".column_exists("pk_column", "table_name")),
-  "data" json NOT NULL
+  "data" json NOT NULL,
+  CONSTRAINT metadata_unique_key UNIQUE ("object_id", "table_name")
 )
