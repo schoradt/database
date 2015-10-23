@@ -1,5 +1,9 @@
 /*
  * changelog from 17.08.2015
+ * - updated names of join columns for table role_permissions, subject_objects,
+ *   subject_roles, subject_projects
+ *
+ * changelog from 17.08.2015
  * - added schema definition for RBAC (Role-based access control 
  *   (https://en.wikipedia.org/wiki/Role-based_access_control))
  */
@@ -40,9 +44,9 @@ CREATE TABLE "permission" (
 
 CREATE TABLE "role_permissions" (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
- "role" uuid NOT NULL REFERENCES "role" ("id"),
- "permission" uuid NOT NULL REFERENCES "permission" ("id"),
- UNIQUE ("role", "permission")
+ "role_id" uuid NOT NULL REFERENCES "role" ("id"),
+ "permission_id" uuid NOT NULL REFERENCES "permission" ("id"),
+ UNIQUE ("role_id", "permission_id")
 );
 
 -- This table must not be named 'user' since this is already a specific
@@ -69,9 +73,9 @@ CREATE TABLE "subject"
 
 CREATE TABLE "subject_roles" (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
- "subject" uuid NOT NULL REFERENCES "subject" ("id"),
- "role" uuid NOT NULL REFERENCES "role" ("id"),
- UNIQUE ("subject", "role")
+ "subject_id" uuid NOT NULL REFERENCES "subject" ("id"),
+ "role_id" uuid NOT NULL REFERENCES "role" ("id"),
+ UNIQUE ("subject_id", "role_id")
 );
 
 CREATE TABLE "project_related_roles" (
@@ -82,10 +86,10 @@ CREATE TABLE "project_related_roles" (
 
 CREATE TABLE "subject_projects" (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
- "subject" uuid NOT NULL REFERENCES "subject" ("id"),
- "project_related_role" uuid NOT NULL REFERENCES "project_related_roles" ("id"),
+ "subject_id" uuid NOT NULL REFERENCES "subject" ("id"),
+ "project_related_role_id" uuid NOT NULL REFERENCES "project_related_roles" ("id"),
  "project_id" uuid NOT NULL,
- UNIQUE ("subject", "project_related_role", "project_id")
+ UNIQUE ("subject_id", "project_related_role_id", "project_id")
 );
 
 CREATE TABLE "openinfra_objects" (
@@ -96,12 +100,12 @@ CREATE TABLE "openinfra_objects" (
 
 CREATE TABLE "subject_objects" (
  "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
- "subject" uuid NOT NULL REFERENCES "subject" ("id"),
- "openinfra_objects" uuid NOT NULL REFERENCES "openinfra_objects" ("id"),
+ "subject_id" uuid NOT NULL REFERENCES "subject" ("id"),
+ "openinfra_objects_id" uuid NOT NULL REFERENCES "openinfra_objects" ("id"),
  "object_id" uuid NOT NULL,
  "object_write" boolean NOT NULL,
  "project_id" uuid NOT NULL,
- UNIQUE ("subject", "openinfra_objects", "object_id", "project_id")
+ UNIQUE ("subject_id", "openinfra_objects_id", "object_id", "project_id")
 );
 
 CREATE TABLE "password_blacklist"
