@@ -42,7 +42,7 @@ CREATE TABLE "files" (
 
 CREATE TABLE "files_projects" (
   "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
-  "file_id" uuid NOT NULL,
+  "file_id" uuid NOT NULL references "files"("id"),
   "project_id" uuid NOT NULL,
   UNIQUE ("file_id", "project_id")
 );
