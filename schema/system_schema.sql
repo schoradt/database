@@ -1,4 +1,8 @@
 /*
+ * changelog from 11.11.2015
+ * - changed unique constraint for attribtue_type_x_attribute_type,
+ *   value_list_x_value_list, value_list_values_x_value_list_values
+ *
  * changelog from 21.10.2015
  * - added unique constraint to table meta_data
  *
@@ -147,7 +151,7 @@ CREATE TABLE "value_list_x_value_list"
   "value_list_1" uuid NOT NULL REFERENCES "value_list" ("id"),
   "value_list_2" uuid NOT NULL REFERENCES "value_list" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  CONSTRAINT vl_x_vl_unique_key UNIQUE ("value_list_1", "value_list_2", "relationship")
+  CONSTRAINT vl_x_vl_unique_key UNIQUE ("value_list_1", "value_list_2")
 );
 
 
@@ -159,7 +163,7 @@ CREATE TABLE "value_list_values_x_value_list_values"
   "value_list_values_1" uuid NOT NULL REFERENCES "value_list_values" ("id"),
   "value_list_values_2" uuid NOT NULL REFERENCES "value_list_values" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  CONSTRAINT vlv_x_vlv_unique_key UNIQUE ("value_list_values_1", "value_list_values_2", "relationship")
+  CONSTRAINT vlv_x_vlv_unique_key UNIQUE ("value_list_values_1", "value_list_values_2")
 );
 
 
@@ -201,7 +205,7 @@ CREATE TABLE "attribute_type_x_attribute_type"
   "attribute_type_1" uuid NOT NULL REFERENCES "attribute_type" ("id"),
   "attribute_type_2" uuid NOT NULL REFERENCES "attribute_type" ("id"),
   "relationship" uuid NOT NULL REFERENCES "value_list_values" ("id"),
-  CONSTRAINT at_x_at_unique_key UNIQUE ("attribute_type_1", "attribute_type_2", "relationship")
+  CONSTRAINT at_x_at_unique_key UNIQUE ("attribute_type_1", "attribute_type_2")
 );
 
 
