@@ -40,6 +40,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -------------------------- schema defintion ------------------------------------
 --------------------------------------------------------------------------------
 -- create schema for meta data database
+DROP SCHEMA IF EXISTS "meta_data" CASCADE;
 CREATE SCHEMA "meta_data";
 
 -- change search path to new created schema

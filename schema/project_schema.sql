@@ -60,6 +60,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -------------------------- schema defintion ------------------------------------
 --------------------------------------------------------------------------------
 -- create the schema for the project database
+DROP SCHEMA IF EXISTS "project" CASCADE;
 CREATE SCHEMA "project";
 
 -- set standard search path to new created schema

@@ -59,6 +59,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -------------------------- schema defintion ------------------------------------
 --------------------------------------------------------------------------------
 -- create the schema for the system database
+DROP SCHEMA IF EXISTS "system" CASCADE;
 CREATE SCHEMA "system";
 
 -- set standard search path to new created schema
