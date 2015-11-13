@@ -654,7 +654,11 @@ CREATE OR REPLACE FUNCTION public.delete_project_schema(_project_id UUID)
     _project_schema varchar;
     _tmp bigint;
   BEGIN
-    _project_schema := 'project_'|| _project_id;
+    IF (_project_id IS NULL) THEN
+        _project_schema := 'project';
+    ELSE
+        _project_schema := 'project_'|| _project_id;
+    END IF;
 
     -- check if the project schema exists
     EXECUTE 'SELECT count("schema_name")
@@ -667,18 +671,22 @@ CREATE OR REPLACE FUNCTION public.delete_project_schema(_project_id UUID)
     
     -- check if their are no entries in the meta data schema that fits to this
     -- project id
-    EXECUTE 'SELECT count(*) FROM "meta_data"."projects" WHERE project_id = '
-            || quote_literal(_project_id) INTO _tmp;
-    IF (_tmp > 0) THEN
-        RAISE EXCEPTION 'The schema "project_%" seems to be still in use. Please check the table "projects" in the meta data schema.', _project_id;
-        RETURN false;
+    IF (_project_id IS NOT NULL) THEN
+        
+        EXECUTE 'SELECT count(*) FROM "meta_data"."projects" WHERE project_id = '
+                || quote_literal(_project_id) INTO _tmp;
+        IF (_tmp > 0) THEN
+            RAISE EXCEPTION 'The schema "project_%" seems to be still in use. Please check the table "projects" in the meta data schema.', _project_id;
+            RETURN false;
+        END IF;
     END IF;
     
     -- remove the project schema
-    EXECUTE 'DROP SCHEMA '|| quote_ident(_project_schema) ||' CASCADE';
+    EXECUTE 'DROP SCHEMA IF EXISTS '|| quote_ident(_project_schema) ||' CASCADE';
     
     -- remove the entries from the table meta_data.gt_pk_metadata_table
     EXECUTE 'DELETE FROM "meta_data"."gt_pk_metadata_table" WHERE "table_schema" = '|| quote_literal(_project_schema);
+    
     RETURN true;
 
   END;
