@@ -1,4 +1,9 @@
 /*
+ * changelog from 13.11.2015
+ * - changed unique constraint for attribute_type_group_to_topic_characteristic,
+ *   relationship_type_to_topic_characteristic and
+ *   attribute_type_to_attribute_type_group
+ *
  * changelog from 11.11.2015
  * - changed unique constraint for attribtue_type_x_attribute_type,
  *   value_list_x_value_list, value_list_values_x_value_list_values
@@ -237,7 +242,8 @@ CREATE TABLE "attribute_type_group_to_topic_characteristic"
   "attribute_type_group_id" uuid NOT NULL REFERENCES "attribute_type_group" ("id"),
   "topic_characteristic_id" uuid NOT NULL REFERENCES "topic_characteristic" ("id"),
   "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id"),
-  "order" integer
+  "order" integer,
+  CONSTRAINT at_x_tc_unique_key UNIQUE ("attribute_type_group_id", "topic_characteristic_id")
 );
 
 
@@ -250,7 +256,8 @@ CREATE TABLE "attribute_type_to_attribute_type_group"
   "attribute_type_group_to_topic_characteristic_id" uuid NOT NULL REFERENCES "attribute_type_group_to_topic_characteristic" ("id"),
   "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id"),
   "default_value" uuid REFERENCES "value_list_values" ("id"),
-  "order" integer
+  "order" integer,
+  CONSTRAINT at_x_atg_unique_key UNIQUE ("attribute_type_id", "attribute_type_group_id", "attribute_type_group_to_topic_characteristic_id")
 );
 
 
@@ -260,7 +267,8 @@ CREATE TABLE "relationship_type_to_topic_characteristic"
   "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "topic_characteristic_id" uuid NOT NULL REFERENCES "topic_characteristic" ("id"),
   "relationship_type_id" uuid REFERENCES "relationship_type" ("id"),
-  "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id")
+  "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id"),
+  CONSTRAINT rt_x_tc_unique_key UNIQUE ("topic_characteristic_id", "relationship_type_id")
 );
 
 
