@@ -57,6 +57,23 @@ INSERT INTO localized_character_string VALUES ('4902bc22-1591-428b-b456-885a8b45
 INSERT INTO localized_character_string VALUES ('4902bc22-1591-428b-b456-885a8b451b1e', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'is part of');
 INSERT INTO localized_character_string VALUES ('6d95ecf8-7a60-48a0-8de0-ee5926c708bf', 'c0d76ff3-a711-42af-920d-09132a287015', 'Diese Gruppe fasst sämtliche Eigenschaften von Wänden zusammen.');
 INSERT INTO localized_character_string VALUES ('6d95ecf8-7a60-48a0-8de0-ee5926c708bf', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'This group collects all properties of walls.');
+INSERT INTO localized_character_string VALUES ('71c6827d-513b-4d80-bec4-b956ac595d2a', 'c0d76ff3-a711-42af-920d-09132a287015', 'Schlagwort');
+INSERT INTO localized_character_string VALUES ('71c6827d-513b-4d80-bec4-b956ac595d2a', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'Byword');
+--INSERT INTO localized_character_string VALUES ('79ff2ce3-dae5-4b13-b227-59cbb6281d23', 'c0d76ff3-a711-42af-920d-09132a287015', 'dunkler Raum');
+INSERT INTO localized_character_string VALUES ('79ff2ce3-dae5-4b13-b227-59cbb6281d23', 'c0d76ff3-a711-42af-920d-09132a287015', 'Bei altertumswissenschaftlichen Feldforschungen unter Beteiligung unterschiedlicher Disziplinen werden heute Daten zumeist in digitaler Form gesammelt. Da diese häufig nicht nachhaltig gesichert, veröffentlicht und vernetzt sind, soll ein webbasiertes Informationssystem entwickelt und für die archäologischen Fächer und die Bauforschung frei zur Verfügung gestellt werden, sowohl für Projekte an Universitäten, Museen, Akademien, dem DAI und anderen Institutionen als auch für ausländische Kooperationspartner. ');
+INSERT INTO localized_character_string VALUES ('79ff2ce3-dae5-4b13-b227-59cbb6281d23', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'dark room');
+INSERT INTO localized_character_string VALUES ('0628d4e1-0b14-41be-ad6a-8e67a15c22cf', 'c0d76ff3-a711-42af-920d-09132a287015', 'kleiner Raum');
+INSERT INTO localized_character_string VALUES ('0628d4e1-0b14-41be-ad6a-8e67a15c22cf', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'small Room');
+INSERT INTO localized_character_string VALUES ('7e4d22f7-5c39-4532-a627-7d0a3d79ad42', 'c0d76ff3-a711-42af-920d-09132a287015', 'Test Werteliste');
+INSERT INTO localized_character_string VALUES ('7e4d22f7-5c39-4532-a627-7d0a3d79ad42', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'test value list');
+INSERT INTO localized_character_string VALUES ('387eaa8d-18e1-4697-81ff-2b286c02280f', 'c0d76ff3-a711-42af-920d-09132a287015', 'Test Werteliste 2');
+INSERT INTO localized_character_string VALUES ('387eaa8d-18e1-4697-81ff-2b286c02280f', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'test value list 2');
+INSERT INTO localized_character_string VALUES ('3be28347-ad44-4375-bf07-7a7065142dfb', 'c0d76ff3-a711-42af-920d-09132a287015', 'Wert 1');
+INSERT INTO localized_character_string VALUES ('3be28347-ad44-4375-bf07-7a7065142dfb', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'value 1');
+INSERT INTO localized_character_string VALUES ('7a8609b6-23b4-443d-96a1-a597a056709e', 'c0d76ff3-a711-42af-920d-09132a287015', 'Wort 2');
+INSERT INTO localized_character_string VALUES ('7a8609b6-23b4-443d-96a1-a597a056709e', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'value 2');
+--INSERT INTO localized_character_string VALUES ('143aa8f5-0916-4a27-82ef-d06fadc1f9e5', 'c0d76ff3-a711-42af-920d-09132a287015', 'Auswahlliste');
+INSERT INTO localized_character_string VALUES ('143aa8f5-0916-4a27-82ef-d06fadc1f9e5', 'b36320a4-0c74-484e-8c5b-402693deee0f', 'shortlist');
 
 INSERT INTO project VALUES ('e7d42bff-4e40-4f43-9d1b-1dc5a190cd75', 'd4bbc73b-85ed-4b63-9568-061d71742063', 'b40828c1-6ba8-4a84-aa32-6b234774a819', NULL); -- Test-Projekt
 
@@ -67,19 +84,34 @@ INSERT INTO attribute_type_group VALUES ('24e81d76-b7ea-4adf-bb46-4ee81b5b83ec',
 INSERT INTO multiplicity VALUES ('2d8bc741-c775-4932-b9ea-83f7251eee04', 0, 4);
 INSERT INTO multiplicity VALUES ('dd051168-b938-4b2f-9361-cfbc7fc5dce4', 1, 1);
 
+INSERT INTO value_list VALUES ('7f9d62d4-a7f2-48b7-95e1-ae52a45ea6e8', '7e4d22f7-5c39-4532-a627-7d0a3d79ad42', NULL); -- Test Werteliste
+INSERT INTO value_list VALUES ('172b7094-88e8-4602-acdf-fca96a4bd614', '387eaa8d-18e1-4697-81ff-2b286c02280f', NULL); -- Test Werteliste 2
+
+INSERT INTO value_list_x_value_list VALUES ('f9771aa9-9c1f-4221-bf6f-ace38092929e', '7f9d62d4-a7f2-48b7-95e1-ae52a45ea6e8', '172b7094-88e8-4602-acdf-fca96a4bd614', '9ce4a45e-13b3-4bbe-ae14-04e8bc2654bb'); -- Test Werteliste [related to] Test Werteliste 2
+
 INSERT INTO value_list_values VALUES ('5de1f2f4-e766-400a-a1cb-2fe8a4373fc3', 'beafb936-9e2e-4ff0-a035-fdc787cef5b7', NULL, true, 'd145bf95-f6ea-4405-832b-55da75e825e5'); -- Raum in WL_Thema
 INSERT INTO value_list_values VALUES ('f534260a-1173-41e3-99a7-98b4103b5e16', '25018772-54bb-4682-b4fe-856fdda2eda4', NULL, true, 'd145bf95-f6ea-4405-832b-55da75e825e5'); -- Wand in WL_Thema
 INSERT INTO value_list_values VALUES ('e1d98bbb-d7c7-48fa-a770-57a3664fb38e', '3c164632-1db0-471c-abc7-7c8634ad24e1', NULL, true, 'd145bf95-f6ea-4405-832b-55da75e825e5'); -- Metadaten in WL_Thema
+INSERT INTO value_list_values VALUES ('d926bf7f-9b1f-43ac-a112-2123236e8643', '3be28347-ad44-4375-bf07-7a7065142dfb', NULL, true, '7f9d62d4-a7f2-48b7-95e1-ae52a45ea6e8'); -- Wert 1 in Test Werteliste
+INSERT INTO value_list_values VALUES ('18478c40-74b2-4aea-8895-40e10fbf42bf', '7a8609b6-23b4-443d-96a1-a597a056709e', NULL, true, '7f9d62d4-a7f2-48b7-95e1-ae52a45ea6e8'); -- Wert 2 in Test Werteliste
+
+INSERT INTO value_list_values_x_value_list_values VALUES ('69062adc-c20e-4073-ad52-3f3b44cd5e63', '5de1f2f4-e766-400a-a1cb-2fe8a4373fc3', 'f534260a-1173-41e3-99a7-98b4103b5e16', '9ce4a45e-13b3-4bbe-ae14-04e8bc2654bb'); -- Raum [related to]] Wand
 
 INSERT INTO attribute_type VALUES ('1d6f37c8-cdb7-4b0a-9a76-c3ae2513a013', 'd73aae78-f4cc-4af7-ae06-9c2b337340e7', NULL, '752fc105-f93b-4b22-bae2-87b2e31653b4', NULL, NULL); -- Farbe, varchar
 INSERT INTO attribute_type VALUES ('091a2936-c1b5-4775-814c-0b4db70fe6cd', '5903ba62-20ae-46b1-a191-407d8e90a7f9', NULL, 'f5a22fd3-1b19-408c-8b6a-94f5d090d89f', NULL, NULL); -- Quadratmeter, float
 INSERT INTO attribute_type VALUES ('8c3b7917-8975-46bb-8c08-3aa5076f8580', '738e8c2e-7c9e-45c4-ba38-8c5e4a114729', NULL, 'f5a22fd3-1b19-408c-8b6a-94f5d090d89f', NULL, NULL); -- Höhe, float
 INSERT INTO attribute_type VALUES ('1f39489b-657d-4568-bbaa-ea191131814d', '1674f343-7393-4e00-b3c0-3b6f365e061b', NULL, '752fc105-f93b-4b22-bae2-87b2e31653b4', NULL, NULL); -- Bearbeiter, varchar
 INSERT INTO attribute_type VALUES ('0226a839-4d1e-4a6f-aa67-d57dd5ea7de2', '116f90de-38ef-411a-a248-6649fb5d53aa', NULL, '1453be24-2b0c-4b40-a648-ecccf0f382a3', NULL, NULL); -- letzte Bearbeitung, date
+INSERT INTO attribute_type VALUES ('48f06316-f5e6-441a-a5e7-77291f3879e7', '71c6827d-513b-4d80-bec4-b956ac595d2a', NULL, '752fc105-f93b-4b22-bae2-87b2e31653b4', NULL, NULL); -- Schlagwort, varchar
+INSERT INTO attribute_type VALUES ('6c7fe6cc-0e1e-4dbd-a7a8-396dee490a8a', '143aa8f5-0916-4a27-82ef-d06fadc1f9e5', NULL, '752fc105-f93b-4b22-bae2-87b2e31653b4', NULL, '7f9d62d4-a7f2-48b7-95e1-ae52a45ea6e8'); -- Auswahlliste, varchar - Test Werteliste
+
+INSERT INTO attribute_type_x_attribute_type VALUES ('dda25557-0fb1-4dae-bd64-44c4dd58d1d0', '091a2936-c1b5-4775-814c-0b4db70fe6cd', '8c3b7917-8975-46bb-8c08-3aa5076f8580', '9ce4a45e-13b3-4bbe-ae14-04e8bc2654bb'); -- Quadratmeter [retlated to] Höhe
 
 INSERT INTO topic_characteristic VALUES ('3aac556e-0ca7-4d0f-8f6a-1886174b00c7', '829b6c94-e5db-4b78-ae90-fe3be19ee261', '5de1f2f4-e766-400a-a1cb-2fe8a4373fc3', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75'); -- Raum-TC, Raum
 INSERT INTO topic_characteristic VALUES ('3b218dd8-09a0-42e0-b570-efaba66c4c31', '6dcec2b0-5231-42f2-a65d-42eeacdbba70', 'f534260a-1173-41e3-99a7-98b4103b5e16', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75'); -- Wand-TC, Wand
 INSERT INTO topic_characteristic VALUES ('5bb8588a-8f0a-4198-a7cc-96ce498731a9', '52b01345-2afb-4fef-93c7-9b9c08ae9761', 'e1d98bbb-d7c7-48fa-a770-57a3664fb38e', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75'); -- Metadaten-TC, Metadaten
+
+INSERT INTO meta_data (object_id, table_name, pk_column, data) VALUES ('3aac556e-0ca7-4d0f-8f6a-1886174b00c7', 'topic_characteristic', 'id', '["48f06316-f5e6-441a-a5e7-77291f3879e7", "091a2936-c1b5-4775-814c-0b4db70fe6cd"]'); -- Raum-T, 
 
 INSERT INTO attribute_type_group_to_topic_characteristic VALUES ('b92c8ce1-278b-4926-8490-24918ac1799a', '92c8b3ee-61cb-44ec-be29-312c1fbb33d6', '3aac556e-0ca7-4d0f-8f6a-1886174b00c7', '2d8bc741-c775-4932-b9ea-83f7251eee04', 1); -- Raum-TC & Raum-Gruppe, m 0:4
 INSERT INTO attribute_type_group_to_topic_characteristic VALUES ('4b75cfc5-cf3b-4ac0-b132-75bcf83b8e19', 'dbe9b7d4-710d-4418-bd28-95004dece304', '3b218dd8-09a0-42e0-b570-efaba66c4c31', '2d8bc741-c775-4932-b9ea-83f7251eee04', 1); -- Wand-TC & Wand-Gruppe, m 0:4
@@ -93,6 +125,9 @@ INSERT INTO attribute_type_to_attribute_type_group VALUES ('7dee86a0-b04d-4236-8
 
 INSERT INTO attribute_type_to_attribute_type_group VALUES ('df853fd6-c1eb-48a0-91ab-9bf194ca4dd5', '1f39489b-657d-4568-bbaa-ea191131814d', '24e81d76-b7ea-4adf-bb46-4ee81b5b83ec', 'a381262e-2d5f-405e-9e8b-98bd43155ea0', 'dd051168-b938-4b2f-9361-cfbc7fc5dce4', NULL, 1); -- Bearbeiter - Metadaten-Gruppe, m 1:1
 INSERT INTO attribute_type_to_attribute_type_group VALUES ('005d75d2-bd72-4a81-a83f-ec0596225581', '0226a839-4d1e-4a6f-aa67-d57dd5ea7de2', '24e81d76-b7ea-4adf-bb46-4ee81b5b83ec', 'a381262e-2d5f-405e-9e8b-98bd43155ea0', 'dd051168-b938-4b2f-9361-cfbc7fc5dce4', NULL, 1); -- letzte Bearbeitung - Metadaten-Gruppe, m 1:1
+
+INSERT INTO attribute_type_to_attribute_type_group VALUES ('c05bbd28-a61f-4e98-9553-0dd599f755c8', '48f06316-f5e6-441a-a5e7-77291f3879e7', '92c8b3ee-61cb-44ec-be29-312c1fbb33d6', 'b92c8ce1-278b-4926-8490-24918ac1799a', '2d8bc741-c775-4932-b9ea-83f7251eee04', NULL, 1); -- Schlagwort - Raum-Gruppe, m 0:4
+INSERT INTO attribute_type_to_attribute_type_group VALUES ('c9bbf3a5-9bf0-4e3d-aea6-a5a63f4e2a31', '6c7fe6cc-0e1e-4dbd-a7a8-396dee490a8a', '92c8b3ee-61cb-44ec-be29-312c1fbb33d6', 'b92c8ce1-278b-4926-8490-24918ac1799a', 'dd051168-b938-4b2f-9361-cfbc7fc5dce4', 'd926bf7f-9b1f-43ac-a112-2123236e8643', 1); -- Auswahlliste - Raum-Gruppe, default: Wert 1, m 1:1
 
 INSERT INTO topic_instance VALUES ('fab4e287-3b8e-48fa-9282-63fc123dff47', '3aac556e-0ca7-4d0f-8f6a-1886174b00c7'); -- Raum-TI-1
 INSERT INTO topic_instance VALUES ('53f85242-2cb0-427c-882b-d4bdbf27e360', '3b218dd8-09a0-42e0-b570-efaba66c4c31'); -- Wand-TI-1
@@ -112,7 +147,6 @@ INSERT INTO topic_instance_x_topic_instance VALUES ('1af5b2d8-5854-4dcb-b31c-177
 INSERT INTO topic_instance_x_topic_instance VALUES ('aa427e06-8fa1-4df6-a367-39a479d0f29e', '07be6a08-d8a7-4c80-ae7e-281d2d306a59', 'fab4e287-3b8e-48fa-9282-63fc123dff47', '63a9125e-7c0e-4c85-abe5-56905900a150'); -- Raum-TI-1 beinhaltet Wand-TI-2
 INSERT INTO topic_instance_x_topic_instance VALUES ('72892807-6f35-4b21-a3aa-9b346a432671', '0e15494c-e461-448c-81a3-f362b782feaa', 'fab4e287-3b8e-48fa-9282-63fc123dff47', '63a9125e-7c0e-4c85-abe5-56905900a150'); -- Raum-TI-1 beinhaltet Wand-TI-3
 INSERT INTO topic_instance_x_topic_instance VALUES ('8702ac0c-4483-4221-b018-f30c3bdd6b93', 'd99a195f-f977-4b88-8246-1c3caca45fd4', 'fab4e287-3b8e-48fa-9282-63fc123dff47', '63a9125e-7c0e-4c85-abe5-56905900a150'); -- Raum-TI-1 beinhaltet Wand-TI-4
-
 
 INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('3a1175c5-9a7a-4526-b0f3-03b85a4ec770', '7fb8bce8-b246-4fca-9c6c-23d3b8d6b6cd', 'd0fb2968-0186-4d15-b7a0-895678cf2657', 'fab4e287-3b8e-48fa-9282-63fc123dff47'); -- Quadratmeter: 25.0 / Raum-TI-1
 INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('d8f54644-6f0e-4bef-b1f7-d088c06c1c88', 'd5375e94-d7e8-45e0-af52-08d952d8f3f0', 'dd0f585e-b270-4140-a2be-eaff549e7dd1', 'fab4e287-3b8e-48fa-9282-63fc123dff47'); -- Höhe: 5.0 / Raum-TI-1
@@ -134,5 +168,10 @@ INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_t
 
 INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('2174b9d1-785e-4b0f-9a7d-37649697eeec', 'bbb5af67-d5f9-4dba-9c74-fd5a8c6fbc8e', 'df853fd6-c1eb-48a0-91ab-9bf194ca4dd5', 'c335daac-5bb3-4152-9b47-84b9694a7fbe'); -- Bearbeiter: Tino / Metadaten-TI-2
 INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('01f00f36-ac30-4c83-9dac-ef1b24abc79c', '9e4e7cbc-9537-4e21-a377-3e73a6da301d', '005d75d2-bd72-4a81-a83f-ec0596225581', 'c335daac-5bb3-4152-9b47-84b9694a7fbe'); -- letzte Bearbeitung: 2014-02-19 08:45:00+01 / Metadaten-TI-2
+
+INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('9e48554c-f787-461d-94c0-a81bfdefa021', '79ff2ce3-dae5-4b13-b227-59cbb6281d23', 'c05bbd28-a61f-4e98-9553-0dd599f755c8', 'fab4e287-3b8e-48fa-9282-63fc123dff47'); -- Schlagwort: heller Raum / Raum-TI-1
+INSERT INTO attribute_value_value ("id", "value", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('d6e303f1-cc19-4b5f-be95-5b7f582737d3', '0628d4e1-0b14-41be-ad6a-8e67a15c22cf', 'c05bbd28-a61f-4e98-9553-0dd599f755c8', 'fab4e287-3b8e-48fa-9282-63fc123dff47'); -- Schlagwort: kleiner Raum / Raum-TI-1
+
+INSERT INTO attribute_value_domain ("id", "domain", "attribute_type_to_attribute_type_group_id", "topic_instance_id") VALUES ('12557eb3-7b46-4245-ad6c-9b7b4278c191', '18478c40-74b2-4aea-8895-40e10fbf42bf', 'c9bbf3a5-9bf0-4e3d-aea6-a5a63f4e2a31', 'fab4e287-3b8e-48fa-9282-63fc123dff47'); -- Auswahlliste: Wert 2 / Raum-TI-1
 
 --ROLLBACK;
