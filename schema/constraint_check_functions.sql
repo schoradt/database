@@ -1,4 +1,8 @@
 /*
+ * changelog from 17.11.2015
+ * - extended constraint 63 to avoid changing values of value 
+ *   list vl_skos_relationship
+ *
  * changelog from 05.08.2015
  * - constraint 10 added
  *
@@ -2829,8 +2833,8 @@ CREATE OR REPLACE FUNCTION check_constraint_62(varchar, uuid,
 /************************************ 63 **************************************/
 /******************************************************************************/
 /*
- * Values of the value list "vl_data_type" must not be updated or deleted. Also
- * inserts are inhibit.
+ * Values of the value list "vl_data_type" and "vl_skos_relationship" must not
+ * be updated or deleted. Also inserts are inhibit.
  *
  * @state   stable
  * @input   varchar: schema
@@ -2851,9 +2855,10 @@ CREATE OR REPLACE FUNCTION check_constraint_63(varchar, uuid)
      WHERE "id" = _belongs_to_value_list INTO _tmp;
 
     -- if the value list is vl_data_type
-    -- (63) Die Werte der Werteliste "vl_data_type" dürfen nicht verändert oder
-    --      gelöscht werden. Ebenso dürfen keine neuen Werte eingetragen werden.
-    IF (_tmp = 'vl_data_type') THEN
+    -- (63) Die Werte der Werteliste "vl_data_type" und "vl_skos_relationship"
+    --      dürfen nicht verändert oder gelöscht werden. Ebenso dürfen keine
+    --      neuen Werte eingetragen werden.
+    IF (_tmp = 'vl_data_type' OR _tmp = 'vl_skos_relationship') THEN
       PERFORM throw_constraint_message(63);
       RETURN true;
     END IF;

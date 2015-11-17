@@ -1,4 +1,8 @@
 /*
+ * changelog from 17.11.2015
+ * - extended constraint 63 to avoid changing values of value 
+ *   list vl_skos_relationship
+ *
  * changelog from 02.08.2015
  * - constraint 10 added
  *
@@ -292,7 +296,7 @@ CREATE OR REPLACE FUNCTION throw_constraint_message(integer)
       WHEN 62 THEN
         _message := 'Constraint 62 - Der "free_text" von "localized_character_string" darf in der Spalte "name" der Tabelle "value_list" nicht bereits mit einer anderen "pt_free_text_id" verwendet werden.';
       WHEN 63 THEN
-        _message := 'Constraint 63 - Die Werte der Werteliste "vl_data_type" dürfen nicht verändert oder gelöscht werden. Ebenso dürfen keine neuen Werte eingetragen werden.';
+        _message := 'Constraint 63 - Die Werte der Werteliste "vl_data_type" und "vl_skos_relationship" dürfen nicht verändert oder gelöscht werden. Ebenso dürfen keine neuen Werte eingetragen werden.';
 
       ELSE
         _message := 'Constraint % is not implemented.', _constraint;
