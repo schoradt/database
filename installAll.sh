@@ -84,6 +84,14 @@ echo -e "\n\ninstall data for file service"
 echo -e "============================="
 psql -p $port -U $user -d $database -1 -f "data/file_data.sql" -q
 
+#install webapp schema
+echo -e "\n\ninstall schema for webapp service"
+echo -e "================================="
+psql -p $port -U $user -d $database -1 -f "schema/webapp_schema.sql"
+
+echo -e "\n\ninstall data for webapp service"
+echo -e "==============================="
+psql -p $port -U $user -d $database -1 -f "data/webapp_data.sql" -q
 
 # install schema for role based access control
 echo -e "\n\ninstall schema for role based access control"

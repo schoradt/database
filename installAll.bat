@@ -18,17 +18,19 @@ SET "db=openinfra"
 SET "password=postgres"
 SET "defaultpostgrespath=C:\Program Files\PostgreSQL\9.4\bin"
 SET "postgrespath="
-SET "projects=baalbek, palatin, test"
+SET "projects=baalbek, palatin, test, import"
 SET "p_database=0"
 SET "p_baalbek=0"
 SET "p_palatin=0"
 SET "p_test=0"
+SET "p_import=0"
 SET "database=0"
 SET "constraints=0"
 SET "rbac=0"
 SET "public=0"
 SET "meta=0"
 SET "file=0"
+SET "webapp=0"
 SET "system=0"
 SET "project=0"
 
@@ -159,6 +161,7 @@ IF NOT "%1"=="" (
     SET "public=1"
     SET "meta=1"
     SET "file=1"
+    SET "webapp=1"
     SET "rbac=1"
     SET "system=1"
     SET "project=1"
@@ -172,6 +175,7 @@ IF NOT "%1"=="" (
     SET "public=1"
     SET "meta=1"
     SET "file=1"
+    SET "webapp=1"
     SET "rbac=1"
     SET "system=1"
     SET "project=1"
@@ -196,6 +200,10 @@ IF NOT "%1"=="" (
   IF "%1"=="-f" SET "file=1"
   IF "%1"=="--file" SET "file=1"
   
+  REM setting for install schema for webapp
+  IF "%1"=="-e" SET "webapp=1"
+  IF "%1"=="--webapp" SET "webapp=1"
+  
   REM setting for install schema for role based access control
   IF "%1"=="-b" SET "rbac=1"
   IF "%1"=="--rbac" SET "rbac=1"
@@ -211,11 +219,13 @@ IF NOT "%1"=="" (
       IF "%2"=="baalbek" ( SET "p_baalbek=0")
       IF "%2"=="palatin" ( SET "p_palatin=0")
       IF "%2"=="test" ( SET "p_test=1")
+      IF "%2"=="import" ( SET "p_import=1")
     ) ELSE (
       SET "project=1"
       SET "p_baalbek=0"
       SET "p_palatin=0"
       SET "p_test=1"
+      SET "p_import=1"
     )
     SHIFT
   )
@@ -225,11 +235,13 @@ IF NOT "%1"=="" (
       IF "%2"=="baalbek" ( SET "p_baalbek=0")
       IF "%2"=="palatin" ( SET "p_palatin=0")
       IF "%2"=="test" ( SET "p_test=1")
+      IF "%2"=="import" ( SET "p_import=1")
     ) ELSE (
       SET "project=1"
       SET "p_baalbek=0"
       SET "p_palatin=0"
       SET "p_test=1"
+      SET "p_import=1"
     )
     SHIFT
   )
@@ -287,6 +299,7 @@ REM output for help option
   ECHO   -m, --meta            install schema for meta data
   ECHO   -b, --rbac            install schema for role based access control
   ECHO   -f, --file            install schema for file service
+  ECHO   -e, --webapp          install schema for webapp
   ECHO   -s, --system          install schema for system data
   ECHO   -r, --project ARG     install schema for project data (%projects%)
   ECHO.
@@ -346,6 +359,9 @@ REM install process
   
   REM install the file database
   IF "%file%"=="1" GOTO file
+  
+  REM install the webapp database
+  IF "%webapp%"=="1" GOTO webapp
   
   REM install schema for role based access control
   IF "%rbac%"=="1" GOTO rbac
@@ -449,7 +465,7 @@ REM install file database
   ECHO Install schema for file service
   ECHO ===============================
   %commandFile% "schema\file_schema.sql" -q
-    
+  
   ECHO.
   ECHO.
   ECHO Install data for file service
@@ -457,6 +473,24 @@ REM install file database
   %commandFile% "data\file_data.sql" -q
   
   SET "file=0"
+  GOTO installloop
+
+
+REM install webapp database
+:webapp
+  ECHO.
+  ECHO.
+  ECHO Install schema for webapp service
+  ECHO =================================
+  %commandFile% "schema\webapp_schema.sql" -q
+  
+  ECHO.
+  ECHO.
+  ECHO Install data for webapp service
+  ECHO ===============================
+  %commandFile% "data\webapp_data.sql" -q
+  
+  SET "webapp=0"
   GOTO installloop
 
 
@@ -513,6 +547,7 @@ REM install project database and trigger
   IF "%p_baalbek%"=="1" ( SET "p_database=1" )
   IF "%p_palatin%"=="1" ( SET "p_database=1" )
   IF "%p_test%"=="1" ( SET "p_database=1" )
+  IF "%p_import%"=="1" ( SET "p_database=1" )
 
   IF "%p_database%"=="1" (
     ECHO.
@@ -540,6 +575,10 @@ REM install project database and trigger
   
   IF "%p_test%"=="1" (
     GOTO install_test
+  )
+  
+  IF "%p_import%"=="1" (
+    GOTO install_import
   )
   
   SET "project=0"
@@ -621,6 +660,10 @@ REM install project database and trigger
   %command% -c "SELECT public.rename_project_schema('Test');"
   
   SET "p_test=0"  
+  GOTO install
+  
+:install_import
+  SET "p_import=0"  
   GOTO install
   
 :end
