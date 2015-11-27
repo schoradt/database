@@ -1,11 +1,17 @@
 # database
 This repository contains all necessary database scripts to initialize the database schema for OpenInfRA. It also contains a Test-Project.
 
+# Prerequisite
+To make use of the provided scripts the bin directory of your PostgreSQL installation must be part of the path variable.
+
 # Installation
 To install the databse for the [OpenInfRA core](https://github.com/OpenInfRA/core) it is necessary to provide an installation of [PostgreSQL 9.4](http://www.postgresql.org/) and [PostGIS 2.1](http://postgis.net/). To insert the necessary data schemas and data we provide two installation scripts and a bunch of SQL files that can be executed manually. 
 
 ## Automatic installation
 To insert the necessary schemas and data we provide two installation scripts. The [first script is a Batch file for Windows systems](installAll.bat). It provides some configuration possibilities that can be passed via parameters. To view the possible parameters use `installAll.bat -?` or `installAll.bat --help`. The [second script is a bash script for Linux systems](installAll.sh). This script does not provide any configuration parameters. It will always install the whole OpenInfRA database.
+
+### Extend automatic installation scripts
+At the moment the installation script is not very flexible. If you create your own project and want to let it be part of the database installation routine you must add it explicit to the script. To do this dirt and quickly you can search in the Batch script for the key words _baalbek_ or _palatin_. These are projects that are not official and were only be used for internal development.
 
 ## Manual installation
 If you encounter problems with the automatic installation scripts a manual installation is also possible. At this point we will determine the order the scripts must be installed.
@@ -33,6 +39,8 @@ If you encounter problems with the automatic installation scripts a manual insta
 7. install the [test project](data/test.sql)
 8. rename the project schema by executing `SELECT public.rename_project_schema('Test');`
 
-## Changing the schema
+# Changing the schema
 If it is required to change something in the file [project_schema.sql](schema/project_schema.sql) you must always adapt the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_schema.sql) in the core as well. The same must be done for the file [project_static_valuelist.sql](schema/project_static_valuelist.sql) that must be updated in the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_static_valuelist.sql) in the core.
-`
+
+# Backup projects
+To create a backup of a project schema you can use the [backup script](backup_project.bat) (only for Windows). To be compatible to the install scripts you must rename your project schema from `project{uuid}` to `project`. To view the possible parameters use `backup_project.bat -?` or `backup_project.bat --help`.
