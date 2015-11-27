@@ -1,4 +1,4 @@
-REM This install script will export a project schema in a form that it can used 
+REM This script will export a project schema in a form that it can be used 
 REM for the installAll scripts.
 
 @ECHO off
@@ -15,7 +15,7 @@ SET "database=openinfra"
 REM do not change the schema name if you want to keep the compatibility to the
 REM installAll scripts
 SET "schema=project"
-SET "basePath=data\trunk\"
+SET "basePath=data\"
 SET "dir="
 
 
