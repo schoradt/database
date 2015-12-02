@@ -111,7 +111,7 @@ INSERT INTO topic_characteristic VALUES ('3aac556e-0ca7-4d0f-8f6a-1886174b00c7',
 INSERT INTO topic_characteristic VALUES ('3b218dd8-09a0-42e0-b570-efaba66c4c31', '6dcec2b0-5231-42f2-a65d-42eeacdbba70', 'f534260a-1173-41e3-99a7-98b4103b5e16', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75'); -- Wand-TC, Wand
 INSERT INTO topic_characteristic VALUES ('5bb8588a-8f0a-4198-a7cc-96ce498731a9', '52b01345-2afb-4fef-93c7-9b9c08ae9761', 'e1d98bbb-d7c7-48fa-a770-57a3664fb38e', 'e7d42bff-4e40-4f43-9d1b-1dc5a190cd75'); -- Metadaten-TC, Metadaten
 
-INSERT INTO meta_data (object_id, table_name, pk_column, data) VALUES ('3aac556e-0ca7-4d0f-8f6a-1886174b00c7', 'topic_characteristic', 'id', '["48f06316-f5e6-441a-a5e7-77291f3879e7", "091a2936-c1b5-4775-814c-0b4db70fe6cd"]'); -- Raum-T, 
+INSERT INTO meta_data (object_id, table_name, pk_column, data) VALUES ('3aac556e-0ca7-4d0f-8f6a-1886174b00c7', 'topic_characteristic', 'id', '{"list_view_columns":["48f06316-f5e6-441a-a5e7-77291f3879e7", "091a2936-c1b5-4775-814c-0b4db70fe6cd"]}'); -- Raum-T, 
 
 INSERT INTO attribute_type_group_to_topic_characteristic VALUES ('b92c8ce1-278b-4926-8490-24918ac1799a', '92c8b3ee-61cb-44ec-be29-312c1fbb33d6', '3aac556e-0ca7-4d0f-8f6a-1886174b00c7', '2d8bc741-c775-4932-b9ea-83f7251eee04', 1); -- Raum-TC & Raum-Gruppe, m 0:4
 INSERT INTO attribute_type_group_to_topic_characteristic VALUES ('4b75cfc5-cf3b-4ac0-b132-75bcf83b8e19', 'dbe9b7d4-710d-4418-bd28-95004dece304', '3b218dd8-09a0-42e0-b570-efaba66c4c31', '2d8bc741-c775-4932-b9ea-83f7251eee04', 1); -- Wand-TC & Wand-Gruppe, m 0:4
