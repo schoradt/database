@@ -63,6 +63,7 @@ INSERT INTO "subject" VALUES ('44ca4b96-a599-4b6c-b291-d5bfd1994e3c','alex','TTg
 INSERT INTO "subject" VALUES ('d8256603-f73e-449b-a1a0-5499b00b42f8','philipp','YxCGd2r7KG1xg/2Z1jbjkMdKdZ+V2UAjfozT4wNJZjc=',current_date,'3ffca723-6323-4181-84dd-d9f7e4fea5f2','mail@projecteditor.btu.de','root','root',1,'de-DE',current_date,null,null,null);
 INSERT INTO "subject" VALUES ('650b0144-b667-40a2-9fb9-0b545f218734','hanna','maLJKoTqv84aXU541IDtx0wWsZwZo6CkzEemM+7lpUM=',current_date,'dab1a46c-436f-4b80-a8ed-8672742a6aed','mail@projecteditor.btu.de','root','root',1,'de-DE',current_date,null,null,null);
 INSERT INTO "subject" VALUES ('5fbe0643-1c79-47ed-a8a9-777306eb7a7a','katja','kAnf6BDkh/f29eKTtvz5bkODvULH6Wu6mMDztNtJqBE=',current_date,'1f53110a-5ccb-4713-8bac-8e49379bc688','mail@projecteditor.btu.de','root','root',1,'de-DE',current_date,null,null,null);
+INSERT INTO "subject" VALUES ('8313a98d-b7b2-4de7-9cd9-00e82f4fbf03','dörthe','GbPKBT6K61iDsilpIXbAOz+DTyFui4DoWYdRI5NGhgk=',current_date,'58245dfc-29fc-4382-b826-b974d07ae255','mail@projecteditor.btu.de','root','root',1,'de-DE',current_date,null,null,null);
 -- root
 INSERT INTO "subject_roles" VALUES ('18184349-9976-41e2-a20e-45c46fd358b4','d3b429e6-f71e-4412-ad52-2d27d3a33c6d','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
 INSERT INTO "subject_roles" VALUES ('e807ca15-bf98-4958-9351-0b7d0cd02858','e66e47b7-470e-46c1-84e4-56472ebdeb66','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
@@ -72,6 +73,7 @@ INSERT INTO "subject_roles" VALUES ('b9602c30-44de-475a-b405-dfcc241ae340','44ca
 INSERT INTO "subject_roles" VALUES ('cadb27d0-0307-4ea5-be2c-78186c456dc4','d8256603-f73e-449b-a1a0-5499b00b42f8','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
 INSERT INTO "subject_roles" VALUES ('67b63c57-d212-47e9-b8ec-7986d66a9312','650b0144-b667-40a2-9fb9-0b545f218734','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
 INSERT INTO "subject_roles" VALUES ('ab24a825-98bf-41d8-b898-5c7c52f8cc79','5fbe0643-1c79-47ed-a8a9-777306eb7a7a','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
+INSERT INTO "subject_roles" VALUES ('5f3e92b9-2378-48d1-b588-b0d98d94a478','8313a98d-b7b2-4de7-9cd9-00e82f4fbf03','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce');
 
 
 INSERT INTO "project_related_roles" VALUES ('0624533e-a8b0-4786-b590-885e414c88fe','projectadmin','Projektadministrator');
