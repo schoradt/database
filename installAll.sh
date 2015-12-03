@@ -25,7 +25,7 @@ while [ "$1" != "" ]; do
                                 user=$1
                                 ;;
         -p | --password )       shift
-                                user=$1
+                                password=$1
                                 ;;
         * )                     echo "Error"
                                 exit 1
@@ -37,9 +37,9 @@ done
 export PGPASSWORD=$password
 
 # create the database (drop if exists) and the necessary extensions
-psql -p $port -U $user -c "DROP DATABASE IF EXISTS $database;"
-psql -p $port -U $user -c "CREATE DATABASE $database;"
-psql -p $port -U $user -d $database -c "CREATE EXTENSION postgis;"
+psql -p $port -U $user -d postgres -c "DROP DATABASE IF EXISTS $database;"
+psql -p $port -U $user -d postgres -c "CREATE DATABASE $database;"
+psql -p $port -U $user -d $database -c "CREATE EXTENSION postgis;" 
 psql -p $port -U $user -d $database -c "CREATE EXTENSION \"uuid-ossp\";"
 
 
@@ -122,55 +122,55 @@ psql -p $port -U $user -d $database -q -1 -f "data/system_initial_topic_framewor
 
 
 # install baalbek
-echo -e "\n\ninstall schema for project database"
-echo -e "==================================="
-psql -p $port -U $user -d $database -1 -f "schema/project_schema.sql"
+#echo -e "\n\ninstall schema for project database"
+#echo -e "==================================="
+#psql -p $port -U $user -d $database -1 -f "schema/project_schema.sql"
 
-echo -e "\n\ninstall project trigger"
-echo -e "======================="
-psql -p $port -U $user -d $database -1 -f "schema/project_trigger.sql"
+#echo -e "\n\ninstall project trigger"
+#echo -e "======================="
+#psql -p $port -U $user -d $database -1 -f "schema/project_trigger.sql"
 
-echo -e "\n\ninstall baalbek geometry settings"
-echo -e "================================="
-psql -p $port -U $user -d $database -1 -f "data/project_baalbek_geom_settings.sql" -q
+#echo -e "\n\ninstall baalbek geometry settings"
+#echo -e "================================="
+#psql -p $port -U $user -d $database -1 -f "data/project_baalbek_geom_settings.sql" -q
 
-echo -e "\n\ninstall baalbek data"
-echo -e "===================="
-pg_restore -p $port -U $user -d $database --disable-triggers "data/project_baalbek_dump"
+#echo -e "\n\ninstall baalbek data"
+#echo -e "===================="
+#pg_restore -p $port -U $user -d $database --disable-triggers "data/project_baalbek_dump"
 
-echo -e "\n\ninstall baalbek meta data"
-echo -e "========================="
-psql -p $port -U $user -d $database -1 -f "data/project_baalbek_meta_data.sql" -q
+#echo -e "\n\ninstall baalbek meta data"
+#echo -e "========================="
+#psql -p $port -U $user -d $database -1 -f "data/project_baalbek_meta_data.sql" -q
 
-echo -e "\n\nrename baalbek schema"
-echo -e "====================="
-psql -p $port -U $user -d $database -c "SELECT public.rename_project_schema('Baalbek');"
+#echo -e "\n\nrename baalbek schema"
+#echo -e "====================="
+#psql -p $port -U $user -d $database -c "SELECT public.rename_project_schema('Baalbek');"
 
 # TODO: make this more generic
-echo -e "\n\ninit baalbek geom views"
-echo -e "====================="
-psql -p $port -U $user -d $database -c "SELECT public.init_geom_views('project_fd27a347-4e33-4ed7-aebc-eeff6dbf1054')"
+#echo -e "\n\ninit baalbek geom views"
+#echo -e "====================="
+#psql -p $port -U $user -d $database -c "SELECT public.init_geom_views('project_fd27a347-4e33-4ed7-aebc-eeff6dbf1054')"
 
-echo -e "\n\ninit indices for baalbek test project"
-echo -e "========================="
-psql -p $port -U $user -d $database -1 -f "schema/project_indices.sql" -q
+#echo -e "\n\ninit indices for baalbek test project"
+#echo -e "========================="
+#psql -p $port -U $user -d $database -1 -f "schema/project_indices.sql" -q
 
 # install palatin
-echo -e "\n\ninstall schema for project database"
-echo -e "==================================="
-psql -p $port -U $user -d $database -1 -f "schema/project_schema.sql"
+#echo -e "\n\ninstall schema for project database"
+#echo -e "==================================="
+#psql -p $port -U $user -d $database -1 -f "schema/project_schema.sql"
 
-echo -e "\n\ninstall project trigger"
-echo -e "======================="
-psql -p $port -U $user -d $database -1 -f "schema/project_trigger.sql"
+#echo -e "\n\ninstall project trigger"
+#echo -e "======================="
+#psql -p $port -U $user -d $database -1 -f "schema/project_trigger.sql"
 
-echo -e "\n\ninstall palatin data"
-echo -e "===================="
-pg_restore -p $port -U $user -d $database --disable-triggers "data/project_palatin_dump"
+#echo -e "\n\ninstall palatin data"
+#echo -e "===================="
+#pg_restore -p $port -U $user -d $database --disable-triggers "data/project_palatin_dump"
 
-echo -e "\n\nrename palatin schema"
-echo -e "====================="
-psql -p $port -U $user -d $database -c "SELECT public.rename_project_schema('Palatin');"
+#echo -e "\n\nrename palatin schema"
+#echo -e "====================="
+#psql -p $port -U $user -d $database -c "SELECT public.rename_project_schema('Palatin');"
 
 
 # install test
