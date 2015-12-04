@@ -1,4 +1,8 @@
 /*
+ * changelog from 04.12.2015
+ * - added NOT NULL constraint to the column relationship_type_id in
+ *   relationship_type_to_topic_characteristic
+ *
  * changelog from 13.11.2015
  * - changed unique constraint for attribute_type_group_to_topic_characteristic,
  *   relationship_type_to_topic_characteristic and
@@ -284,7 +288,7 @@ CREATE TABLE "relationship_type_to_topic_characteristic"
 (
   "id" uuid NOT NULL PRIMARY KEY DEFAULT create_uuid(),
   "topic_characteristic_id" uuid NOT NULL REFERENCES "topic_characteristic" ("id"),
-  "relationship_type_id" uuid REFERENCES "relationship_type" ("id"),
+  "relationship_type_id" uuid NOT NULL REFERENCES "relationship_type" ("id"),
   "multiplicity" uuid NOT NULL REFERENCES "multiplicity" ("id"),
   CONSTRAINT rt_x_tc_unique_key UNIQUE ("topic_characteristic_id", "relationship_type_id")
 );
