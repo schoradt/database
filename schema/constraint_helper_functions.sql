@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.12.2015
+ * - updated compare_data_types to support image and file attribute types
+ *
  * changelog from 17.11.2015
  * - extended constraint 63 to avoid changing values of value 
  *   list vl_skos_relationship
@@ -1059,8 +1062,8 @@ CREATE OR REPLACE FUNCTION check_for_multiple(uuid[])
 /*
  * Determines the data type of a text element and compares it with the data
  * type of a attribute type. The comparison is based on the PostgreSQL CAST
- * function. PostgreSQL doesn't support an url data type so at this point the
- * comparison is realized with a regular expression.
+ * function. PostgreSQL doesn't support an url, image or file data type so at
+ * this point the comparison is realized with a regular expression.
  *
  * @state   stable
  * @input   varchar: schema name
@@ -1077,6 +1080,9 @@ CREATE OR REPLACE FUNCTION compare_data_types(varchar, text, uuid)
     _data_type varchar;
     _url_pattern varchar;
     _is_url boolean;
+    _is_file_or_image boolean;
+    _project_id varchar;
+    _file_project_count integer;
   BEGIN
     -- set search path to passed schema
     EXECUTE 'SET search_path TO '|| quote_ident(_schema) ||', constraints, public';
@@ -1099,6 +1105,27 @@ CREATE OR REPLACE FUNCTION compare_data_types(varchar, text, uuid)
     -- if the value is not but the data type is an url return false
     IF ((_is_url = false) AND (_data_type = 'url')) THEN
 	  RETURN false;
+    END IF;
+
+    -- check the value in a special way if the data type is file or image
+    IF (_data_type = 'image' OR _data_type = 'file') THEN
+    
+        -- extract project id from schema
+        _project_id := substring(_schema, position('_' in _schema)+1, char_length(_schema));
+
+        -- check if the value (UUID) and the project id (extracted from the
+        -- schema) is listed in the table files_projects
+        EXECUTE 'SELECT count(id) FROM file.files_projects ' ||
+                 'WHERE file_id = ' || quote_literal(_value) ||
+                 ' AND project_id = ' || quote_literal(_project_id) 
+           INTO _file_project_count;
+                 
+        -- if en entry exists return true, else false
+        IF (_file_project_count > 0) THEN
+          RETURN true;
+        ELSE
+          RETURN false;
+        END IF;
     END IF;
 
     -- use the PostgreSQL CAST function to prove the compatibility of the value

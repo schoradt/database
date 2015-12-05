@@ -1,4 +1,7 @@
 /*
+ * changelog from 05.12.2015
+ * - fixed bugs in constraint 31 and 32
+ *
  * changelog from 17.11.2015
  * - extended constraint 63 to avoid changing values of value 
  *   list vl_skos_relationship
@@ -1334,6 +1337,7 @@ CREATE OR REPLACE FUNCTION check_constraint_31(varchar, uuid, uuid)
     _new_attribute_type_to_attribute_type_group_id ALIAS FOR $2;
     _new_value ALIAS FOR $3;
     _attribute_type_id uuid;
+    _data_type varchar;
   BEGIN
 
     -- set search path to passed schema
@@ -1346,14 +1350,19 @@ CREATE OR REPLACE FUNCTION check_constraint_31(varchar, uuid, uuid)
         FROM "attribute_type_to_attribute_type_group"
        WHERE "id" = _new_attribute_type_to_attribute_type_group_id;
 
-      -- (31) Einträge in die Spalte "value" der Relation "attribute_value_value"
-      --      dürfen keine tausender Trennzeichen besitzen, insofern der Datentyp
-      --      des zugehörigen Attributtyps ein Zahlentyp (z. Bsp. Integer oder
-      --      Numeric) ist.
-      IF NOT compare_data_types(_schema, get_localized_character_string(
-                 _schema, _new_value), _attribute_type_id) THEN
-        PERFORM throw_constraint_message(31);
-        RETURN true;
+     -- retrieve the data type
+     SELECT return_attribute_data_type(_schema, _attribute_type_id) INTO _data_type;
+     
+     IF (_data_type = 'numeric' OR _data_type = 'integer') THEN
+        -- (31) Einträge in die Spalte "value" der Relation "attribute_value_value"
+        --      dürfen keine tausender Trennzeichen besitzen, insofern der Datentyp
+        --      des zugehörigen Attributtyps ein Zahlentyp (z. Bsp. Integer oder
+        --      Numeric) ist.
+        IF NOT compare_data_types(_schema, get_localized_character_string(
+                   _schema, _new_value), _attribute_type_id) THEN
+          PERFORM throw_constraint_message(31);
+          RETURN true;
+        END IF;
       END IF;
     END IF;
 
@@ -1382,6 +1391,7 @@ CREATE OR REPLACE FUNCTION check_constraint_32(varchar, uuid, uuid)
     _new_attribute_type_to_attribute_type_group_id ALIAS FOR $2;
     _new_value ALIAS FOR $3;
     _attribute_type_id uuid;
+    _data_type varchar;
   BEGIN
 
     -- set search path to passed schema
@@ -1394,13 +1404,18 @@ CREATE OR REPLACE FUNCTION check_constraint_32(varchar, uuid, uuid)
         FROM "attribute_type_to_attribute_type_group"
        WHERE "id" = _new_attribute_type_to_attribute_type_group_id;
 
-      -- (32) Der Datentyp von "attribute_value_value" muss dem entsprechen,
-      --      der im Attribut "data_type" des zugehörigen Attributtyps
-      --      spezifiziert ist.
-      IF NOT compare_data_types(_schema, get_localized_character_string(
-                 _schema, _new_value), _attribute_type_id) THEN
-        PERFORM throw_constraint_message(32);
-        RETURN true;
+      -- retrieve the data type
+      SELECT return_attribute_data_type(_schema, _attribute_type_id) INTO _data_type;
+     
+      IF (_data_type != 'image' AND _data_type != 'file') THEN
+        -- (32) Der Datentyp von "attribute_value_value" muss dem entsprechen,
+        --      der im Attribut "data_type" des zugehörigen Attributtyps
+        --      spezifiziert ist.
+        IF NOT compare_data_types(_schema, get_localized_character_string(
+                   _schema, _new_value), _attribute_type_id) THEN
+          PERFORM throw_constraint_message(32);
+          RETURN true;
+        END IF;
       END IF;
     END IF;
 
