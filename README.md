@@ -10,6 +10,8 @@ To install the databse for the [OpenInfRA core](https://github.com/OpenInfRA/cor
 ## Automatic installation
 To insert the necessary schemas and data we provide two installation scripts. The [first script is a Batch file for Windows systems](installAll.bat). It provides some configuration possibilities that can be passed via parameters. To view the possible parameters use `installAll.bat -?` or `installAll.bat --help`. The [second script is a bash script for Linux systems](installAll.sh). This script does not provide any configuration parameters. It will always install the whole OpenInfRA database.
 
+**Attention: The scripts doesn't have any error handling. Be sure that no one is connected to the database, if you do a complete installation.**
+
 ### Extend automatic installation scripts
 At the moment the installation script is not very flexible. If you create your own project and want to let it be part of the database installation routine you must add it explicit to the script. To do this dirt and quickly you can search in the Batch script for the key words _baalbek_ or _palatin_. These are projects that are not official and were only be used for internal development.
 
