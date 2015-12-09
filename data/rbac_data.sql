@@ -31,6 +31,7 @@ INSERT INTO "permission" VALUES ('1fbfd6eb-4b48-4819-829d-59909caf4b7c','permiss
 INSERT INTO "permission" VALUES ('5fdf7895-3717-476d-8373-fc56a60350aa','permission for reading and writing rbac database','/rbac:r,w');
 INSERT INTO "permission" VALUES ('c906813d-2268-4f94-9dfb-a467e4340cd5','permission for creating new project schemas','/projects:r,w');
 INSERT INTO "permission" VALUES ('86353fab-0b70-43f8-84bc-1c5d81a94f9e','permission for uploading files','/files:r,w');
+INSERT INTO "permission" VALUES ('4b220b38-86da-490d-b52f-5c4b234a57b8','permission for a specific topic characteristic','/system/topiccharacteristics/{id}:r,w:404bc61c-5629-463e-9612-7320c3750f1f');
 
 -- root
 INSERT INTO "role_permissions" VALUES ('2a5d3193-1bef-4bec-9fee-9142806af191','c0057bdd-b3ba-4e80-afb6-3cf5cb51ebce','97e4d76e-9e40-43a1-b1f5-e9e1e7ca147e');
@@ -38,6 +39,7 @@ INSERT INTO "role_permissions" VALUES ('2a5d3193-1bef-4bec-9fee-9142806af191','c
 INSERT INTO "role_permissions" VALUES ('a66e9e00-e0a2-44f2-8de8-0256b256e30a','9b3e5f1b-c720-4242-a9d5-c243b68fc301','8e618e6b-7f07-471e-95b4-9af66c6acfe8');
 -- syseditor
 INSERT INTO "role_permissions" VALUES ('d562c5b6-8e59-418a-9a4c-7f2cfedc1a86','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771','1fbfd6eb-4b48-4819-829d-59909caf4b7c');
+INSERT INTO "role_permissions" VALUES ('cda986d4-81ae-442f-9411-addf89e9489f','fe45a9e1-1fe6-4b9b-9c92-6f71559c5771','4b220b38-86da-490d-b52f-5c4b234a57b8');
 -- sysadmin
 INSERT INTO "role_permissions" VALUES ('ad048dda-a52a-4d4c-81eb-205b1f4723cb','aef02838-4b92-44e4-bf6a-dc8655b6844b','5fdf7895-3717-476d-8373-fc56a60350aa');
 INSERT INTO "role_permissions" VALUES ('6c096e21-359d-4ed9-942f-82dbb8427ea5','aef02838-4b92-44e4-bf6a-dc8655b6844b','c906813d-2268-4f94-9dfb-a467e4340cd5');
