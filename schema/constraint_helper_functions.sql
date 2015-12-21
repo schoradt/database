@@ -1,4 +1,7 @@
 /*
+ * changelog from 21.12.2015
+ * - constraint 54 added
+ *
  * changelog from 05.12.2015
  * - updated compare_data_types to support image and file attribute types
  *
@@ -282,6 +285,8 @@ CREATE OR REPLACE FUNCTION throw_constraint_message(integer)
         _message := 'Constraint 52 - Die Spalten "language_code_id", "country_code_id" und "character_code_id" der Tabelle "pt_locale" müssen gemeinsam UNIQUE sein. Dabei muss der Wert NULL, der in "country_code_id" auftauchen kann, als eigenständiger Wert betrachtet.';
       WHEN 53 THEN
         _message := 'Constraint 53 - Die maximale "multiplicity" von "attribute_type_group_to_topic_characteristic" multipliziert mit der Summe der maximalen "multiplicity" von "attribute_type_to_attribute_type_group", insofern nicht NULL, muss sich in der maximalen Anzahl der Spalten von "attribute_type_group_to_topic_characteristic" widerspiegeln. Dabei müssen die Werte für "attribute_type_group_id" und "topic_characteristic_id" in "attribute_type_group_to_topic_characteristic" immer dieselben sein.';
+      WHEN 54 THEN
+        _message := 'Constraint 54 - Ein Tupel in der Relation "attribute_value" darf nur sooft auftreten, wie es in "attribute_type_to_attribute_type_group" durch "multiplicity" definiert ist. Dabei gelten folgende Kardinaltitäten: 0 – optional, Zahl – Wert der Zahl, NULL – beliebig.';
       WHEN 55 THEN
         _message := 'Constraint 55 - Wenn in der Relation "project" ein Tupel in der Spalte "subproject_of" einen Eintrag besitzt, darf es keine Schleife über n Einträge geben.';
       WHEN 56 THEN

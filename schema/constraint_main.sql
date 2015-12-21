@@ -1,4 +1,7 @@
 /*
+ * changelog from 21.12.2015
+ * - constraint 54 added
+ *
  * changelog from 05.08.2015
  * - fixed arguments for check_constraint_27 call
  * - added constraint check for meta_data
@@ -1167,6 +1170,13 @@ CREATE OR REPLACE FUNCTION check_attribute_value_value_i(varchar, uuid,
                             _new_value)) THEN
       RETURN true;
     END IF;
+    
+    -- check constraint 54
+    IF (check_constraint_54(_schema, 
+                            _new_attribute_type_to_attribute_type_group_id,
+                            _new_topic_instance_id)) THEN
+      RETURN true;
+    END IF;
 
     RETURN false;
   END;
@@ -1233,6 +1243,13 @@ CREATE OR REPLACE FUNCTION check_attribute_value_value_u(varchar, uuid, uuid,
     IF (check_constraint_32(_schema,
                             _new_attribute_type_to_attribute_type_group_id,
                             _new_value)) THEN
+      RETURN true;
+    END IF;
+    
+    -- check constraint 54
+    IF (check_constraint_54(_schema, 
+                            _new_attribute_type_to_attribute_type_group_id,
+                            _new_topic_instance_id)) THEN
       RETURN true;
     END IF;
 
