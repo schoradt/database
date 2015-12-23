@@ -45,4 +45,7 @@ If you encounter problems with the automatic installation scripts a manual insta
 If it is required to change something in the file [project_schema.sql](schema/project_schema.sql) you must always adapt the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_schema.sql) in the core as well. The same must be done for the file [project_static_valuelist.sql](schema/project_static_valuelist.sql) that must be updated in the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_static_valuelist.sql) in the core.
 
 # Backup projects
-To create a backup of a project schema you can use the [backup script](backup_project.bat) (only for Windows). To be compatible to the install scripts you must rename your project schema from `project{uuid}` to `project`. To view the possible parameters use `backup_project.bat -?` or `backup_project.bat --help`.
+To create a backup of a project schema you can use the [backup script](backup_project.bat) (only for Windows). To be compatible to the install scripts you must rename your project schema from `project_{uuid}` to `project`. To view the possible parameters use `backup_project.bat -?` or `backup_project.bat --help`.
+
+# TODO
+- implement tests for constraints
