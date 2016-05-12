@@ -575,7 +575,7 @@ CREATE OR REPLACE FUNCTION check_attribute_type_to_attribute_type_group_u(
     _new_attribute_type_group_id ALIAS FOR $4;
     _new_attribute_type_group_to_topic_characteristic_id ALIAS FOR $5;
     _new_default_value_id ALIAS FOR $6;
-    _new_order ALIAS FOR $7;
+    _new_multiplicity_id ALIAS FOR $7;
     _old_id ALIAS FOR $8;
     _old_attribute_type_group_to_topic_characteristic_id ALIAS FOR $9;
   BEGIN
