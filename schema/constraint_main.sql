@@ -461,10 +461,18 @@ CREATE OR REPLACE FUNCTION check_attribute_type_group_to_topic_characteristic_u(
     END IF;
 
     -- check constraint 12
-    IF (check_constraint_12(_schema, _old_topic_characteristic_id,
-                            _old_attribute_type_group_id)) THEN
-      RETURN true;
-    END IF;
+    -- IF (check_constraint_12(_schema, _old_topic_characteristic_id,
+    --                         _old_attribute_type_group_id)) THEN
+    --   RETURN true;
+    -- END IF; 
+    --
+    -- disable check to allow changing of the order attribute
+    -- there is no reason to prevent reordering the groups when
+    -- there values attached to the used attribute types; it's 
+    -- just a matter of presentation, not data integrity
+    --
+    -- there is however a check needed to test if a group was
+    -- moved to another topic characteristic
 
     RETURN false;
   END;
