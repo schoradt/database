@@ -2611,10 +2611,9 @@ CREATE OR REPLACE FUNCTION check_constraint_56(varchar, uuid, uuid, uuid, uuid)
     --      alte "attribute_type_group".
     -- check if there is a attribute_value for the old
     -- attribute_type_to_attribute_type_group combination
-    IF ((SELECT "id"
+    IF (EXISTS(SELECT "id"
           FROM "attribute_value"
          WHERE "attribute_type_to_attribute_type_group_id" = _old_id)
-         IS NOT NULL
        ) THEN
 
       -- retrieve the topic_characteristic of the old combination
