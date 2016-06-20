@@ -1,4 +1,7 @@
 /*
+ * changelog from 21.12.2015
+ * - constraint 54 added
+ *
  * changelog from 05.08.2015
  * - fixed arguments for check_constraint_27 call
  * - added constraint check for meta_data
@@ -458,10 +461,18 @@ CREATE OR REPLACE FUNCTION check_attribute_type_group_to_topic_characteristic_u(
     END IF;
 
     -- check constraint 12
-    IF (check_constraint_12(_schema, _old_topic_characteristic_id,
-                            _old_attribute_type_group_id)) THEN
-      RETURN true;
-    END IF;
+    -- IF (check_constraint_12(_schema, _old_topic_characteristic_id,
+    --                         _old_attribute_type_group_id)) THEN
+    --   RETURN true;
+    -- END IF; 
+    --
+    -- disable check to allow changing of the order attribute
+    -- there is no reason to prevent reordering the groups when
+    -- there values attached to the used attribute types; it's 
+    -- just a matter of presentation, not data integrity
+    --
+    -- there is however a check needed to test if a group was
+    -- moved to another topic characteristic
 
     RETURN false;
   END;
@@ -572,7 +583,7 @@ CREATE OR REPLACE FUNCTION check_attribute_type_to_attribute_type_group_u(
     _new_attribute_type_group_id ALIAS FOR $4;
     _new_attribute_type_group_to_topic_characteristic_id ALIAS FOR $5;
     _new_default_value_id ALIAS FOR $6;
-    _new_order ALIAS FOR $7;
+    _new_multiplicity_id ALIAS FOR $7;
     _old_id ALIAS FOR $8;
     _old_attribute_type_group_to_topic_characteristic_id ALIAS FOR $9;
   BEGIN
@@ -1167,6 +1178,13 @@ CREATE OR REPLACE FUNCTION check_attribute_value_value_i(varchar, uuid,
                             _new_value)) THEN
       RETURN true;
     END IF;
+    
+    -- check constraint 54
+    IF (check_constraint_54(_schema, 
+                            _new_attribute_type_to_attribute_type_group_id,
+                            _new_topic_instance_id)) THEN
+      RETURN true;
+    END IF;
 
     RETURN false;
   END;
@@ -1233,6 +1251,13 @@ CREATE OR REPLACE FUNCTION check_attribute_value_value_u(varchar, uuid, uuid,
     IF (check_constraint_32(_schema,
                             _new_attribute_type_to_attribute_type_group_id,
                             _new_value)) THEN
+      RETURN true;
+    END IF;
+    
+    -- check constraint 54
+    IF (check_constraint_54(_schema, 
+                            _new_attribute_type_to_attribute_type_group_id,
+                            _new_topic_instance_id)) THEN
       RETURN true;
     END IF;
 

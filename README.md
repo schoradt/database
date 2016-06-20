@@ -10,6 +10,8 @@ To install the databse for the [OpenInfRA core](https://github.com/OpenInfRA/cor
 ## Automatic installation
 To insert the necessary schemas and data we provide two installation scripts. The [first script is a Batch file for Windows systems](installAll.bat). It provides some configuration possibilities that can be passed via parameters. To view the possible parameters use `installAll.bat -?` or `installAll.bat --help`. The [second script is a bash script for Linux systems](installAll.sh). This script does not provide any configuration parameters. It will always install the whole OpenInfRA database.
 
+**Attention: The scripts doesn't have any error handling. Be sure that no one is connected to the database, if you do a complete installation.**
+
 ### Extend automatic installation scripts
 At the moment the installation script is not very flexible. If you create your own project and want to let it be part of the database installation routine you must add it explicit to the script. To do this dirt and quickly you can search in the Batch script for the key words _baalbek_ or _palatin_. These are projects that are not official and were only be used for internal development.
 
@@ -43,4 +45,8 @@ If you encounter problems with the automatic installation scripts a manual insta
 If it is required to change something in the file [project_schema.sql](schema/project_schema.sql) you must always adapt the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_schema.sql) in the core as well. The same must be done for the file [project_static_valuelist.sql](schema/project_static_valuelist.sql) that must be updated in the [schema script](https://github.com/OpenInfRA/core/blob/master/openinfra_core/src/main/resources/de/btu/openinfra/backend/sql/project_static_valuelist.sql) in the core.
 
 # Backup projects
-To create a backup of a project schema you can use the [backup script](backup_project.bat) (only for Windows). To be compatible to the install scripts you must rename your project schema from `project{uuid}` to `project`. To view the possible parameters use `backup_project.bat -?` or `backup_project.bat --help`.
+To create a backup of a project schema you can use the [backup script](backup_project.bat) (only for Windows). To be compatible to the install scripts you must rename your project schema from `project_{uuid}` to `project`. To view the possible parameters use `backup_project.bat -?` or `backup_project.bat --help`.
+
+# TODO
+- Implement tests for constraints.
+- Some primary keys are used as pseudo foreign keys in different schemas. E.g. the UUID of an uploaded file will be used as value in attribute_value_value or ids in file / rbac schema reference to project schema without having a real foreign key.

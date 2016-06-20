@@ -1,4 +1,10 @@
 /*
+ * changelog from 21.12.2015
+ * - constraint 54 added
+ *
+ * changelog from 05.12.2015
+ * - fixed bugs in constraint 31 and 32
+ *
  * changelog from 17.11.2015
  * - extended constraint 63 to avoid changing values of value 
  *   list vl_skos_relationship
@@ -1334,6 +1340,7 @@ CREATE OR REPLACE FUNCTION check_constraint_31(varchar, uuid, uuid)
     _new_attribute_type_to_attribute_type_group_id ALIAS FOR $2;
     _new_value ALIAS FOR $3;
     _attribute_type_id uuid;
+    _data_type varchar;
   BEGIN
 
     -- set search path to passed schema
@@ -1346,14 +1353,19 @@ CREATE OR REPLACE FUNCTION check_constraint_31(varchar, uuid, uuid)
         FROM "attribute_type_to_attribute_type_group"
        WHERE "id" = _new_attribute_type_to_attribute_type_group_id;
 
-      -- (31) Einträge in die Spalte "value" der Relation "attribute_value_value"
-      --      dürfen keine tausender Trennzeichen besitzen, insofern der Datentyp
-      --      des zugehörigen Attributtyps ein Zahlentyp (z. Bsp. Integer oder
-      --      Numeric) ist.
-      IF NOT compare_data_types(_schema, get_localized_character_string(
-                 _schema, _new_value), _attribute_type_id) THEN
-        PERFORM throw_constraint_message(31);
-        RETURN true;
+     -- retrieve the data type
+     SELECT return_attribute_data_type(_schema, _attribute_type_id) INTO _data_type;
+     
+     IF (_data_type = 'numeric' OR _data_type = 'integer') THEN
+        -- (31) Einträge in die Spalte "value" der Relation "attribute_value_value"
+        --      dürfen keine tausender Trennzeichen besitzen, insofern der Datentyp
+        --      des zugehörigen Attributtyps ein Zahlentyp (z. Bsp. Integer oder
+        --      Numeric) ist.
+        IF NOT compare_data_types(_schema, get_localized_character_string(
+                   _schema, _new_value), _attribute_type_id) THEN
+          PERFORM throw_constraint_message(31);
+          RETURN true;
+        END IF;
       END IF;
     END IF;
 
@@ -1382,6 +1394,7 @@ CREATE OR REPLACE FUNCTION check_constraint_32(varchar, uuid, uuid)
     _new_attribute_type_to_attribute_type_group_id ALIAS FOR $2;
     _new_value ALIAS FOR $3;
     _attribute_type_id uuid;
+    _data_type varchar;
   BEGIN
 
     -- set search path to passed schema
@@ -1394,13 +1407,18 @@ CREATE OR REPLACE FUNCTION check_constraint_32(varchar, uuid, uuid)
         FROM "attribute_type_to_attribute_type_group"
        WHERE "id" = _new_attribute_type_to_attribute_type_group_id;
 
-      -- (32) Der Datentyp von "attribute_value_value" muss dem entsprechen,
-      --      der im Attribut "data_type" des zugehörigen Attributtyps
-      --      spezifiziert ist.
-      IF NOT compare_data_types(_schema, get_localized_character_string(
-                 _schema, _new_value), _attribute_type_id) THEN
-        PERFORM throw_constraint_message(32);
-        RETURN true;
+      -- retrieve the data type
+      SELECT return_attribute_data_type(_schema, _attribute_type_id) INTO _data_type;
+     
+      IF (_data_type != 'image' AND _data_type != 'file') THEN
+        -- (32) Der Datentyp von "attribute_value_value" muss dem entsprechen,
+        --      der im Attribut "data_type" des zugehörigen Attributtyps
+        --      spezifiziert ist.
+        IF NOT compare_data_types(_schema, get_localized_character_string(
+                   _schema, _new_value), _attribute_type_id) THEN
+          PERFORM throw_constraint_message(32);
+          RETURN true;
+        END IF;
       END IF;
     END IF;
 
@@ -1904,6 +1922,7 @@ CREATE OR REPLACE FUNCTION check_constraint_43(varchar, uuid, uuid,
     _min integer;
     _max integer;
     _count integer;
+    _delete boolean;
   BEGIN
 
     -- set search path to passed schema
@@ -1914,6 +1933,7 @@ CREATE OR REPLACE FUNCTION check_constraint_43(varchar, uuid, uuid,
       THEN
       _new_topic_instance_1_id := _old_topic_instance_1_id;
       _new_relationship_type_id := _old_relationship_type_id;
+      _delete := true;
     END IF;
 
     -- retrieve the topic characteristic from topic instance 1
@@ -1952,7 +1972,7 @@ CREATE OR REPLACE FUNCTION check_constraint_43(varchar, uuid, uuid,
     --      viele.
     -- wenn es sich um einen Aufruf aus einem Delete Trigger handelt, muss der
     -- min_value beachtet werden
-    IF (_new_relationship_type_id IS NULL) THEN
+    IF (_delete) THEN
       IF (_count-1 < _min) THEN
         PERFORM throw_constraint_message(43);
         RETURN true;
@@ -2408,6 +2428,102 @@ CREATE OR REPLACE FUNCTION check_constraint_53(varchar, uuid, uuid, uuid)
   $$ LANGUAGE 'plpgsql';
 
 
+
+/******************************************************************************/
+/************************************ 54 **************************************/
+/******************************************************************************/
+/*
+ * TODO: translate constraint
+ *
+ * @state   stable
+ * @input   varchar: schema name
+ *          uuid: new attribute_value_id
+ *          uuid: new attribute_type_group_id
+ *          uuid: old attribute_value_id - DEFAULT NULL
+ *          uuid: old attribute_type_group_id - DEFAULT NULL
+ * @output  boolean: true if constraint is violated, else false
+ */
+CREATE OR REPLACE FUNCTION check_constraint_54(varchar, uuid, uuid,
+                                               uuid DEFAULT NULL,
+                                               uuid DEFAULT NULL)
+  RETURNS boolean AS $$
+  DECLARE
+    _schema ALIAS FOR $1;
+    _new_attribute_type_to_attribute_type_group_id ALIAS FOR $2;
+    _new_topic_instance_id ALIAS FOR $3;
+    _old_attribute_type_to_attribute_type_group_id ALIAS FOR $4;
+    _old_topic_instance_id ALIAS FOR $5;
+    _topic_characteristic_id uuid;
+    _multiplicity record;
+    _multiplicity_id uuid;
+    _min integer;
+    _max integer;
+    _count integer;
+    _delete boolean := false;
+  BEGIN
+
+    -- set search path to passed schema
+    EXECUTE 'SET search_path TO '|| quote_ident(_schema) ||', constraints, public';
+
+    -- special treatment for delete because new values are NULL
+    IF (_new_attribute_type_to_attribute_type_group_id IS NULL 
+        AND _new_topic_instance_id IS NULL)
+      THEN
+      _new_attribute_type_to_attribute_type_group_id := 
+            _old_attribute_type_to_attribute_type_group_id;
+      _new_topic_instance_id := _old_topic_instance_id;
+      _delete := true;
+    END IF;
+
+    -- retrieve the topic characteristic from topic instance
+    SELECT "topic_characteristic_id" INTO _topic_characteristic_id
+      FROM "topic_instance"
+     WHERE "id" = _new_topic_instance_id;
+     
+    -- retrieve the multiplicity from attribute_type_to_attribute_type_group
+    SELECT "multiplicity" INTO _multiplicity_id
+      FROM "attribute_type_to_attribute_type_group"
+     WHERE "id" = _new_attribute_type_to_attribute_type_group_id;
+
+    -- retrieve the min_value and max_value from the multiplicity
+    SELECT min_value, max_value INTO _multiplicity
+      FROM "multiplicity"
+     WHERE "id" = _multiplicity_id;
+    _min := _multiplicity.min_value;
+    _max := _multiplicity.max_value;
+
+    -- count numbers of attribute values that already exists for the specified
+    -- attribute_type_to_attribute_type_group
+    SELECT count("id")
+      INTO _count
+      FROM "attribute_value"
+     WHERE "attribute_type_to_attribute_type_group_id" = _new_attribute_type_to_attribute_type_group_id 
+       AND "topic_instance_id" = _new_topic_instance_id;
+
+    -- (54) Ein Tupel in der Relation "attribute_value" darf nur sooft 
+    --      auftreten, wie es in "attribute_type_to_attribute_type_group" durch
+    --      "multiplicity" definiert ist. Dabei gelten folgende Kardinaltitäten:
+    --      0 – optional, Zahl – Wert der Zahl, NULL – beliebig.
+    -- respect the min_value if we come from a delete trigger
+    IF (_delete) THEN
+      IF (_count-1 < _min) THEN
+        PERFORM throw_constraint_message(54);
+        RETURN true;
+      END IF;
+    END IF;
+
+    -- there must be only max_value entries or unlimited if max_value is null
+    IF (_count+1 > _max) THEN
+      PERFORM throw_constraint_message(54);
+      RETURN true;
+    END IF;
+
+    RETURN false;
+  END;
+  $$ LANGUAGE 'plpgsql';
+
+
+
 /******************************************************************************/
 /************************************ 55 **************************************/
 /******************************************************************************/
@@ -2495,10 +2611,9 @@ CREATE OR REPLACE FUNCTION check_constraint_56(varchar, uuid, uuid, uuid, uuid)
     --      alte "attribute_type_group".
     -- check if there is a attribute_value for the old
     -- attribute_type_to_attribute_type_group combination
-    IF ((SELECT "id"
+    IF (EXISTS(SELECT "id"
           FROM "attribute_value"
          WHERE "attribute_type_to_attribute_type_group_id" = _old_id)
-         IS NOT NULL
        ) THEN
 
       -- retrieve the topic_characteristic of the old combination
